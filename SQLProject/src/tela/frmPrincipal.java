@@ -5,6 +5,10 @@
  */
 package tela;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.net.URL;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -19,6 +23,9 @@ public class frmPrincipal extends javax.swing.JFrame {
      */
     public frmPrincipal() {
         this.setExtendedState(MAXIMIZED_BOTH);
+        URL url = this.getClass().getResource("..\\icons\\logoSQL128x128.png");
+        Image imagemTitulo = Toolkit.getDefaultToolkit().getImage(url);
+        this.setIconImage(imagemTitulo);
         initComponents();
     }
 
@@ -119,7 +126,8 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("About");
+        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/help.png"))); // NOI18N
+        jMenu3.setText("Help");
 
         jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/about.png"))); // NOI18N
