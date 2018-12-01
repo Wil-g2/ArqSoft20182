@@ -26,9 +26,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.ImageIcon;
 import javax.swing.ListModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import util.GraphViz;
 
 /**
  *
@@ -82,7 +84,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        lblImage = new javax.swing.JLabel();
+        jButton10 = new javax.swing.JButton();
 
         jFileChooser1.setDialogTitle("");
 
@@ -318,22 +321,31 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Restrições", jPanel3);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png")); // NOI18N
+        jButton10.setText("Gerar");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
+                .addComponent(jButton10)
+                .addGap(0, 805, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jButton10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addGap(35, 35, 35))
         );
 
         jTabbedPane1.addTab("Visualização", jPanel4);
@@ -401,7 +413,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         }
                     }
                 }.start();
-                //Thread.sleep(1000);                
+                Thread.sleep(1000);
                 //JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
                 Properties props = new Properties();
                 FileOutputStream config = new FileOutputStream("config.properties");
@@ -411,7 +423,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             } catch (IOException ex) {
                 Logger.getLogger(LoadProject.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex.getMessage());
-                //} catch (InterruptedException ex) {
+            } catch (InterruptedException ex) {
                 Logger.getLogger(LoadProject.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
@@ -419,7 +431,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             String tables = "CREATE TABLE IF NOT EXISTS project (id INTEGER PRIMARY KEY AUTOINCREMENT, origem VARCHAR(255) NOT NULL,tipo VARCHAR(30) NOT NULL,destino VARCHAR(255) NOT NULL)";
             String insert = "INSERT INTO project(origem,tipo,destino) VALUES(?,?,?);";
             String del = "DELETE FROM project";
-            String vi_packages = "create view IF NOT EXISTS vi_pacotes as  select distinct pacote1 as package from  pacotes union select distinct pacote2 as package from pacotes;";
+            String vi_packages = "create view IF NOT EXISTS vi_pacotes as  select distinct pacote1 as package from  pacotes;";
             String vi_classes = "create view IF NOT EXISTS vi_classes as select distinct origem from project;";
             String vi_superClass = "create view IF NOT EXISTS vi_superClass as select distinct destino as superClass from project where project.tipo = 'extends';";
             String vi_interfaces = "create view IF NOT EXISTS vi_interfaces as select distinct destino as interface from project where project.tipo = 'implements';";
@@ -449,8 +461,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                             System.out.println("Teste");
                             System.out.printf("%s\n", linha);
                             linha = lerArq.readLine(); // lê da segunda até a última linha
-                            if (linha!=null) {
-                            //if ((!linha.isEmpty())&(!linha.equals(""))){                                                        
+                            if (linha != null) {
+                                //if ((!linha.isEmpty())&(!linha.equals(""))){                                                        
                                 String[] dados = linha.split(",");
                                 prepareStatement.setString(1, dados[0]);
                                 prepareStatement.setString(2, dados[1]);
@@ -509,6 +521,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
                                 }
                             }
+
+                        }
+                        try {
+                            prepareStatement.setString(1, s.trim());
+                            prepareStatement.setString(2, "");
+                            prepareStatement.execute();
+                        } catch (Exception e) {
 
                         }
                     }
@@ -714,6 +733,61 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+
+        //generate file DOT (graph description language)			
+        //path of file 
+        String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
+        //FileWriter file;
+        GraphViz gv = new GraphViz();
+        gv.addln(gv.start_graph());
+
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+        String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
+        String pacotes = "select distinct package from vi_pacotes";
+        if (connection.conectar()) {
+            try {
+                Statement stmt = connection.criarStatement();
+                PreparedStatement prepareStatement = connection.preparesStatement(pacotes);
+                ResultSet rs = prepareStatement.executeQuery();
+                while (rs.next()) {
+                    if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
+                        gv.addln(rs.getString(1) + " [shape=box];");
+                    }
+                }
+                PreparedStatement prepareStatementTipos = connection.preparesStatement(pacoteAccess);
+                ResultSet rsTipo = prepareStatementTipos.executeQuery();
+                while (rsTipo.next()) {
+                    if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
+                        gv.addln(rsTipo.getString(1) + "->" + rsTipo.getString(2) + ";");
+                    }
+                }
+
+                gv.add(gv.end_graph());
+                //out of file .dot 
+                System.out.println("========= Start Copy ========");
+                System.out.println(gv.getDotSource());
+                System.out.println("========= End Copy ========");
+                gv.increaseDpi();
+
+                //Type file
+                String type = "png";
+                //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
+                File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
+                //File out = new File(path+"."+ type);    // Windows
+                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);               
+                lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));
+                lblImage.repaint();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } finally {
+                connection.desconectar();
+            }
+        }
+
+    }//GEN-LAST:event_jButton10ActionPerformed
+
     private void GetClass() {
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String classes = "select distinct origem from project";
@@ -751,6 +825,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -761,7 +836,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -772,6 +846,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblImage;
     private javax.swing.JList<String> listClass;
     private javax.swing.JList<String> listClass2;
     private javax.swing.JList<String> listRestriction;
