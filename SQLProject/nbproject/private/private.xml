@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/TP11/src/conexoes/ConexaoSQLLite.java</file>
-            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/TP11/src/tela/frmRestriction.java</file>
-            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/TP11/src/tela/frmPrincipal.java</file>
-            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/TP11/src/tela/LoadProject.java</file>
-            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/TP11/src/tela/frmiRestricoes.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/tela/frmRestriction.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/tela/frmiQuery.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/descoberta/Main.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/util/GraphViz.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/tela/frmPrincipal.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/tela/frmiRestricoes.java</file>
+            <file>file:/F:/Desenvolvimento/Projetos/ArqSoft20182/SQLProject/src/tela/frmiAbout.java</file>
         </group>
     </open-files>
 </project-private>

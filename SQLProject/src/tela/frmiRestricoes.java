@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package tela;
+
 import conexoes.ConexaoSQLLite;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
@@ -23,9 +24,12 @@ import javax.swing.DefaultListModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.ListModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 /**
  *
  * @author Willian
@@ -39,6 +43,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         initComponents();
     }
     private DefaultListModel modelRestriciton = new DefaultListModel();
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -368,7 +373,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        jProgressBar1.setValue(0);  
+        jProgressBar1.setValue(0);
         jFileChooser1.setDialogTitle("Selecione o projeto");
         jFileChooser1.setFileSelectionMode(jFileChooser1.DIRECTORIES_ONLY);
         //FileFilter filter = new FileNameExtensionFilter("Dependencias Texto", "txt","text");
@@ -383,19 +388,19 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             try {
                 String cmd = "java -jar javadepextractor.jar " + txtPath.getText();
                 System.out.println(cmd);
-                run.exec(cmd);                                                              
-                new Thread(){
-                    public void run(){
-                      for(int i=0; i<=100; i++){
-                          try{
-                              sleep(5);  
-                              jProgressBar1.setValue(i);
-                          }catch(Exception e){
-                              System.out.println(e.getMessage());
-                          }
-                      }  
+                run.exec(cmd);
+                new Thread() {
+                    public void run() {
+                        for (int i = 0; i <= 100; i++) {
+                            try {
+                                sleep(5);
+                                jProgressBar1.setValue(i);
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
                     }
-                }.start();                
+                }.start();
                 //Thread.sleep(1000);                
                 //JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
                 Properties props = new Properties();
@@ -406,7 +411,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             } catch (IOException ex) {
                 Logger.getLogger(LoadProject.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex.getMessage());
-            //} catch (InterruptedException ex) {
+                //} catch (InterruptedException ex) {
                 Logger.getLogger(LoadProject.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
@@ -414,11 +419,25 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             String tables = "CREATE TABLE IF NOT EXISTS project (id INTEGER PRIMARY KEY AUTOINCREMENT, origem VARCHAR(255) NOT NULL,tipo VARCHAR(30) NOT NULL,destino VARCHAR(255) NOT NULL)";
             String insert = "INSERT INTO project(origem,tipo,destino) VALUES(?,?,?);";
             String del = "DELETE FROM project";
+            String vi_packages = "create view IF NOT EXISTS vi_pacotes as  select distinct pacote1 as package from  pacotes union select distinct pacote2 as package from pacotes;";
+            String vi_classes = "create view IF NOT EXISTS vi_classes as select distinct origem from project;";
+            String vi_superClass = "create view IF NOT EXISTS vi_superClass as select distinct destino as superClass from project where project.tipo = 'extends';";
+            String vi_interfaces = "create view IF NOT EXISTS vi_interfaces as select distinct destino as interface from project where project.tipo = 'implements';";
+            String vi_classAccess = "create view IF NOT EXISTS vi_classAccess as select distinct origem as source,destino as target from project where (tipo ='access' or tipo ='create' or tipo = 'declare') and (destino not like 'java%');";
+            String vi_classDeclare = "create view IF NOT EXISTS vi_classDeclare as select distinct origem as source, destino as target from project where (tipo = 'declare') and  ((destino like 'java%'));";
             if (connection.conectar()) {
                 try {
                     Statement stmt = connection.criarStatement();
+                    //preparação do banco de dados
                     stmt.execute(tables);
                     stmt.execute(del);
+                    stmt.execute(vi_packages);
+                    stmt.execute(vi_classes);
+                    stmt.execute(vi_superClass);
+                    stmt.execute(vi_interfaces);
+                    stmt.execute(vi_classAccess);
+                    stmt.execute(vi_classDeclare);
+
                     Scanner ler = new Scanner(System.in);
                     String nome = txtPath.getText() + "\\dependencies.txt";
                     try {
@@ -430,26 +449,76 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                             System.out.println("Teste");
                             System.out.printf("%s\n", linha);
                             linha = lerArq.readLine(); // lê da segunda até a última linha
-                            String[] dados = linha.split(",");
-                            prepareStatement.setString(1, dados[0]);
-                            prepareStatement.setString(2, dados[1]);
-                            prepareStatement.setString(3, dados[2]);
-                            prepareStatement.execute();
+                            if (linha!=null) {
+                            //if ((!linha.isEmpty())&(!linha.equals(""))){                                                        
+                                String[] dados = linha.split(",");
+                                prepareStatement.setString(1, dados[0]);
+                                prepareStatement.setString(2, dados[1]);
+                                prepareStatement.setString(3, dados[2]);
+                                prepareStatement.execute();
+                            }
                         }
 
                         arq.close();
                     } catch (IOException e) {
                         System.err.printf("Erro na abertura do arquivo: %s.\n",
-                            e.getMessage());
+                                e.getMessage());
                         JOptionPane.showMessageDialog(null, e.getMessage());
                     }
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
-                } finally {                    
-                    GetClass();
-                    JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
-                    connection.desconectar();
                 }
+
+                String classes = "select distinct origem from project";
+                String query = "select distinct origem,destino from project where origem like ? and tipo in (\"declare\",\"extend\",\"create\") and destino in (select distinct origem from project where tipo in (\"declare\",\"extend\",\"create\")) ";
+                Set<String> pacote = new HashSet<>();
+                Set<String> pacoteAccess = new HashSet<>();
+                String pacotes = "CREATE TABLE IF NOT EXISTS pacotes (id INTEGER PRIMARY KEY AUTOINCREMENT, pacote1 VARCHAR(255) NOT NULL,pacote2 VARCHAR(255) NOT NULL)";
+                String insertPacote = "INSERT INTO pacotes(pacote1,pacote2) VALUES(?,?);";
+                String delPacotes = "DELETE FROM pacotes";
+                try {
+                    Statement stmt = connection.criarStatement();
+                    stmt.execute(pacotes);
+                    stmt.execute(delPacotes);
+                    PreparedStatement prepareStatement = null;
+                    String[] parameters = null;
+                    prepareStatement = connection.preparesStatement(classes);
+                    ResultSet rs = prepareStatement.executeQuery();
+                    while (rs.next()) {
+                        String classe = rs.getString(1);
+                        int index = classe.lastIndexOf(".");
+                        pacote.add(classe.substring(0, index));
+                    }
+                    for (String s : pacote) {
+                        prepareStatement = connection.preparesStatement(query);
+                        prepareStatement.setString(1, s.trim() + "%");
+                        ResultSet rsQuery = prepareStatement.executeQuery();
+                        prepareStatement = connection.preparesStatement(insertPacote);
+                        while (rsQuery.next()) {
+                            int index = rsQuery.getString(1).lastIndexOf(".");
+                            int index1 = rsQuery.getString(2).lastIndexOf(".");
+                            String a = rsQuery.getString(1).substring(0, index);
+                            String b = rsQuery.getString(2).substring(0, index1);
+                            if (!a.equals(b)) {
+                                try {
+                                    prepareStatement.setString(1, a);
+                                    prepareStatement.setString(2, b);
+                                    prepareStatement.execute();
+                                    pacoteAccess.add(a + " access " + b);
+                                } catch (Exception e) {
+
+                                }
+                            }
+
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(frmiRestricoes.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                GetClass();
+                JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
+                connection.desconectar();
             }
         }
 
@@ -629,7 +698,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     } else {
                         if (model.getElementAt(i).contains("Can Access")) { //Se for Access e não encotrar ocorrência
                             txtResult.append("(AUSÊNCIA NÃO OBRIGATÓRIA) - " + model.getElementAt(i) + "\n");
-                        }else if(model.getElementAt(i).contains("Required")){ //Se for Required e não encotrar ocorrência
+                        } else if (model.getElementAt(i).contains("Required")) { //Se for Required e não encotrar ocorrência
                             txtResult.append("(AUSÊNCIA) - " + model.getElementAt(i) + "\n");
                         }
                     }
@@ -645,7 +714,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jButton9ActionPerformed
 
-    private void GetClass(){
+    private void GetClass() {
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String classes = "select distinct origem from project";
         String tipos = "select distinct destino from project";
