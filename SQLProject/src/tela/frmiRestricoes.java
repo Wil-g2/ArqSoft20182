@@ -80,6 +80,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         jFileChooser1.setDialogTitle("");
 
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Restrições");
+
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel1.setText("Project:");

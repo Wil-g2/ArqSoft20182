@@ -41,6 +41,8 @@ public class frmPrincipal extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Projeto");
@@ -117,6 +119,20 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("About");
+
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/about.png"))); // NOI18N
+        jMenuItem6.setText("About");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem6);
+
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -154,7 +170,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         try {
             frame.setSelected(true);
         } catch (java.beans.PropertyVetoException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:"+e.getMessage(), "Error", 1);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:" + e.getMessage(), "Error", 1);
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
@@ -165,7 +181,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         try {
             query.setSelected(true);
         } catch (java.beans.PropertyVetoException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:"+e.getMessage(), "Error", 1);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:" + e.getMessage(), "Error", 1);
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
@@ -173,6 +189,17 @@ public class frmPrincipal extends javax.swing.JFrame {
         LoadProjectMoose load = new LoadProjectMoose();
         load.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        frmiAbout about = new frmiAbout();
+        about.setVisible(true);
+        desktop.add(about);
+        try {
+            about.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:" + e.getMessage(), "Error", 1);
+        }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -213,12 +240,14 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

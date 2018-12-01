@@ -39,6 +39,10 @@ public class frmiQuery extends javax.swing.JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
 
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Query");
+
         jLabel1.setText("Query:");
 
         txtQuery.setColumns(20);
