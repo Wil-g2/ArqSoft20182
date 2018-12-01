@@ -77,6 +77,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         jFileChooser1.setDialogTitle("");
 
@@ -97,6 +98,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        jProgressBar1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -310,15 +313,22 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Restrições", jPanel3);
 
+        jLabel2.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png")); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 864, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Visualização", jPanel4);
@@ -358,7 +368,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+        jProgressBar1.setValue(0);  
         jFileChooser1.setDialogTitle("Selecione o projeto");
         jFileChooser1.setFileSelectionMode(jFileChooser1.DIRECTORIES_ONLY);
         //FileFilter filter = new FileNameExtensionFilter("Dependencias Texto", "txt","text");
@@ -371,14 +381,23 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             txtPath.setText(jFileChooser1.getSelectedFile().getAbsolutePath());
             Runtime run = Runtime.getRuntime();
             try {
-                jProgressBar1.setIndeterminate(true);
                 String cmd = "java -jar javadepextractor.jar " + txtPath.getText();
                 System.out.println(cmd);
-                run.exec(cmd);
-                
-                Thread.sleep(5000);
-                jProgressBar1.setIndeterminate(false);
-                JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
+                run.exec(cmd);                                                              
+                new Thread(){
+                    public void run(){
+                      for(int i=0; i<=100; i++){
+                          try{
+                              sleep(5);  
+                              jProgressBar1.setValue(i);
+                          }catch(Exception e){
+                              System.out.println(e.getMessage());
+                          }
+                      }  
+                    }
+                }.start();                
+                //Thread.sleep(1000);                
+                //JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
                 Properties props = new Properties();
                 FileOutputStream config = new FileOutputStream("config.properties");
                 props.setProperty("path", txtPath.getText());
@@ -387,7 +406,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             } catch (IOException ex) {
                 Logger.getLogger(LoadProject.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex.getMessage());
-            } catch (InterruptedException ex) {
+            //} catch (InterruptedException ex) {
                 Logger.getLogger(LoadProject.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
@@ -426,8 +445,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     }
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
-                } finally {
+                } finally {                    
                     GetClass();
+                    JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
                     connection.desconectar();
                 }
             }
@@ -672,6 +692,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
