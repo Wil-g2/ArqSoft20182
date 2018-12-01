@@ -154,12 +154,19 @@ public class frmPrincipal extends javax.swing.JFrame {
         try {
             frame.setSelected(true);
         } catch (java.beans.PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:"+e.getMessage(), "Error", 1);
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        frmQuery query = new frmQuery();
+        frmiQuery query = new frmiQuery();
         query.setVisible(true);
+        desktop.add(query);
+        try {
+            query.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar Tela:"+e.getMessage(), "Error", 1);
+        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed

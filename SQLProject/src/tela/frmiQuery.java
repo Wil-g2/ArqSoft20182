@@ -9,19 +9,17 @@ import conexoes.ConexaoSQLLite;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import javax.swing.ListModel;
 
 /**
  *
  * @author Willian
  */
-public class frmQuery extends javax.swing.JFrame {
+public class frmiQuery extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form frmQuery
+     * Creates new form frmiQuery
      */
-    public frmQuery() {
+    public frmiQuery() {
         initComponents();
     }
 
@@ -35,16 +33,17 @@ public class frmQuery extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtQuery = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Query");
-
         jLabel1.setText("Query:");
+
+        txtQuery.setColumns(20);
+        txtQuery.setRows(5);
+        jScrollPane1.setViewportView(txtQuery);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run16x16.png"))); // NOI18N
         jButton1.setText("Executar");
@@ -53,10 +52,6 @@ public class frmQuery extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        txtQuery.setColumns(20);
-        txtQuery.setRows(5);
-        jScrollPane1.setViewportView(txtQuery);
 
         txtResult.setColumns(20);
         txtResult.setRows(5);
@@ -76,7 +71,7 @@ public class frmQuery extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 804, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,7 +87,7 @@ public class frmQuery extends javax.swing.JFrame {
                                 .addGap(82, 82, 82)))
                         .addGap(48, 48, 48)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -102,66 +97,24 @@ public class frmQuery extends javax.swing.JFrame {
         ConexaoSQLLite connection = new ConexaoSQLLite();
         if (connection.conectar()) {
             try {
-                PreparedStatement prepareStatement = null;                
+                PreparedStatement prepareStatement = null;
                 //prepareStatement.setString(1, parameters[0].trim());
                 //prepareStatement.setString(2, parameters[1].trim());
-                prepareStatement = connection.preparesStatement(txtQuery.getText());                
+                prepareStatement = connection.preparesStatement(txtQuery.getText());
                 ResultSet rs =prepareStatement.executeQuery();
                 //if (rs.getInt("count")>1) {
-                txtResult.setText("");
-                while (rs.next()) {
-                   txtResult.append("origem:"+rs.getString("origem")+" tipo:"+rs.getString("tipo")+" destino:"+rs.getString("destino")+"\n");
+                    txtResult.setText("");
+                    while (rs.next()) {
+                        txtResult.append("origem:"+rs.getString("origem")+" tipo:"+rs.getString("tipo")+" destino:"+rs.getString("destino")+"\n");
+                    }
+                } catch (SQLException e) {
+
+                } finally {
+                    connection.desconectar();
                 }
-            } catch (SQLException e) {
-                
-            } finally {
-                connection.desconectar();
             }
-        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmQuery.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmQuery.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmQuery.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmQuery.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new frmQuery().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

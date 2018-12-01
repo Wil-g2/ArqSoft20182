@@ -7,6 +7,8 @@
         <Property name="dialogTitle" type="java.lang.String" value=""/>
       </Properties>
     </Component>
+    <Component class="javax.swing.ButtonGroup" name="btnGroup">
+    </Component>
   </NonVisualComponents>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -155,7 +157,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="864" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="884" max="32767" attributes="0"/>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -216,7 +218,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="484" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="490" max="32767" attributes="0"/>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
@@ -254,7 +256,7 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jButton9" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Component id="jScrollPane4" pref="106" max="32767" attributes="0"/>
+                              <Component id="jScrollPane4" pref="108" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -325,11 +327,18 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="rgRequired">
                   <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="btnGroup"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Required"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="rgDenied">
                   <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="btnGroup"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Denied"/>
                   </Properties>
                 </Component>
@@ -380,6 +389,9 @@
                 </Container>
                 <Component class="javax.swing.JButton" name="jButton5">
                   <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/icons/save16x16.png"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Salvar"/>
                   </Properties>
                   <Events>
@@ -388,6 +400,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton8">
                   <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/icons/load16x16.png"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Carregar"/>
                   </Properties>
                   <Events>
@@ -396,6 +411,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton9">
                   <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/icons/validate16x16.png"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Validar"/>
                   </Properties>
                   <Events>
@@ -436,7 +454,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="484" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="490" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>

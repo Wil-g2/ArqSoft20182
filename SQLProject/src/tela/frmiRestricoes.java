@@ -49,6 +49,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jFileChooser1 = new javax.swing.JFileChooser();
+        btnGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtPath = new javax.swing.JTextField();
@@ -165,8 +166,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
+        btnGroup.add(rgRequired);
+        rgRequired.setSelected(true);
         rgRequired.setText("Required");
 
+        btnGroup.add(rgDenied);
         rgDenied.setText("Denied");
 
         listClass2.setModel(new javax.swing.AbstractListModel<String>() {
@@ -188,6 +192,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(listRestriction);
 
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/save16x16.png"))); // NOI18N
         jButton5.setText("Salvar");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,6 +200,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/load16x16.png"))); // NOI18N
         jButton8.setText("Carregar");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,6 +208,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/validate16x16.png"))); // NOI18N
         jButton9.setText("Validar");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -217,7 +224,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 864, Short.MAX_VALUE)
+            .addGap(0, 884, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -261,7 +268,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 484, Short.MAX_VALUE)
+            .addGap(0, 490, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addContainerGap()
@@ -293,7 +300,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     .addGap(18, 18, 18)
                     .addComponent(jButton9)
                     .addGap(4, 4, 4)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -307,7 +314,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 484, Short.MAX_VALUE)
+            .addGap(0, 490, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Visualização", jPanel4);
@@ -416,6 +423,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
                 } finally {
+                    GetClass();
                     connection.desconectar();
                 }
             }
@@ -613,8 +621,42 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    private void GetClass(){
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+        String classes = "select distinct origem from project";
+        String tipos = "select distinct destino from project";
+        if (connection.conectar()) {
+            try {
+                DefaultListModel listModel = new DefaultListModel();
+                DefaultListModel listModel2 = new DefaultListModel();
+                Statement stmt = connection.criarStatement();
+                PreparedStatement prepareStatement = connection.preparesStatement(classes);
+                ResultSet rs = prepareStatement.executeQuery();
+                while (rs.next()) {
+                    listClass.removeAll();
+                    listClass2.removeAll();
+                    listModel.addElement(rs.getString("origem"));
+                    listModel2.addElement(rs.getString("origem"));
 
+                }
+                PreparedStatement prepareStatementTipos = connection.preparesStatement(tipos);
+                ResultSet rsTipo = prepareStatementTipos.executeQuery();
+                while (rsTipo.next()) {
+                    listModel2.addElement(rsTipo.getString("destino"));
+                }
+                listClass.setModel(listModel);
+                listClass2.setModel(listModel2);
+
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } finally {
+                connection.desconectar();
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
