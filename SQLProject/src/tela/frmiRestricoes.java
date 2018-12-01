@@ -86,6 +86,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         lblImage = new javax.swing.JLabel();
         jButton10 = new javax.swing.JButton();
+        btnGerarClass = new javax.swing.JButton();
+        btnGerarCluster = new javax.swing.JButton();
 
         jFileChooser1.setDialogTitle("");
 
@@ -321,10 +323,24 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Restrições", jPanel3);
 
-        jButton10.setText("Gerar");
+        jButton10.setText("Pacotes");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
+            }
+        });
+
+        btnGerarClass.setText("Classes");
+        btnGerarClass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerarClassActionPerformed(evt);
+            }
+        });
+
+        btnGerarCluster.setText("Cluster");
+        btnGerarCluster.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerarClusterActionPerformed(evt);
             }
         });
 
@@ -334,7 +350,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jButton10)
-                .addGap(0, 805, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGerarClass)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGerarCluster)
+                .addGap(0, 645, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -342,7 +362,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jButton10)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton10)
+                    .addComponent(btnGerarClass)
+                    .addComponent(btnGerarCluster))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                 .addGap(35, 35, 35))
@@ -752,14 +775,14 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 ResultSet rs = prepareStatement.executeQuery();
                 while (rs.next()) {
                     if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
-                        gv.addln(rs.getString(1) + " [shape=box];");
+                        gv.addln("\""+rs.getString(1) + "\" [shape=box];");
                     }
                 }
                 PreparedStatement prepareStatementTipos = connection.preparesStatement(pacoteAccess);
                 ResultSet rsTipo = prepareStatementTipos.executeQuery();
                 while (rsTipo.next()) {
                     if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
-                        gv.addln(rsTipo.getString(1) + "->" + rsTipo.getString(2) + ";");
+                        gv.addln("\""+rsTipo.getString(1) + "\" -> \"" + rsTipo.getString(2) + "\";");
                     }
                 }
 
@@ -775,7 +798,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
                 File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
                 //File out = new File(path+"."+ type);    // Windows
-                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);               
+                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
                 lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));
                 lblImage.repaint();
             } catch (SQLException e) {
@@ -787,6 +810,132 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
 
     }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
+        //generate file DOT (graph description language) Classes			
+        //path of file 
+        String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
+        //FileWriter file;
+        GraphViz gv = new GraphViz();
+        gv.addln(gv.start_graph());
+
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+        String classes = "select distinct origem from vi_classes";
+        String classesAccess = "select distinct source, target from vi_classAccess";
+        if (connection.conectar()) {
+            try {
+                Statement stmt = connection.criarStatement();
+                PreparedStatement prepareStatement = connection.preparesStatement(classes);
+                ResultSet rs = prepareStatement.executeQuery();
+                while (rs.next()) {
+                    if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
+                        gv.addln("\"" + rs.getString(1) + "\"" + " [weight=8];");
+                    }
+                }
+                PreparedStatement prepareStatementTipos = connection.preparesStatement(classesAccess);
+                ResultSet rsTipo = prepareStatementTipos.executeQuery();
+                while (rsTipo.next()) {
+                    if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
+                        gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                    }
+                }
+
+                gv.add(gv.end_graph());
+                //out of file .dot 
+                System.out.println("========= Start Copy ========");
+                System.out.println(gv.getDotSource());
+                System.out.println("========= End Copy ========");
+                gv.increaseDpi();
+
+                //Type file
+                String type = "png";
+                //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
+                File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
+                //File out = new File(path+"."+ type);    // Windows
+                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
+                ImageIcon image = new ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png");
+                //lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));                
+                lblImage.setIcon(image);
+                lblImage.repaint();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } finally {
+                connection.desconectar();
+            }
+        }
+    }//GEN-LAST:event_btnGerarClassActionPerformed
+
+    private void btnGerarClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClusterActionPerformed
+        //generate file DOT (graph description language) Classes			
+        //path of file 
+        String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
+        //FileWriter file;
+        GraphViz gv = new GraphViz();
+        gv.addln(gv.start_graph());
+
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+        String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
+        String pacotes = "select distinct package from vi_pacotes";
+        String classes = "select distinct origem from vi_classes where origem like ?";
+        String classesAccess = "select distinct source, target from vi_classAccess";
+        if (connection.conectar()) {
+            try {
+                Statement stmt = connection.criarStatement();
+                PreparedStatement prepareStatement = connection.preparesStatement(pacotes);
+                ResultSet rs = prepareStatement.executeQuery();
+                while (rs.next()) {
+                    if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
+                        gv.addln("subgraph \"" + rs.getString(1) + " \" {");
+                        gv.addln("node [style=filled];");
+                        stmt = connection.criarStatement();
+                        prepareStatement = connection.preparesStatement(classes);
+                        prepareStatement.setString(1, rs.getString(1) + "%");
+                        ResultSet rsClass = prepareStatement.executeQuery();
+                        while (rsClass.next()) {
+                            if ((!rsClass.getString(1).equals("")) & (!rsClass.getString(1).isEmpty())) {
+                                gv.addln("\"" + rsClass.getString(1) + "\";");
+                            }
+                        }
+                        gv.addln("label = \""+ rs.getString(1) +"\";");
+                        gv.addln("}");
+                    }
+                }
+                PreparedStatement prepareStatementTipos = connection.preparesStatement(classesAccess);
+                ResultSet rsTipo = prepareStatementTipos.executeQuery();
+                while (rsTipo.next()) {
+                    if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
+                        gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                    }
+                }
+                gv.addln("Projeto [shape=Mdiamond];");               
+
+                gv.add(gv.end_graph());
+                //out of file .dot 
+                System.out.println("========= Start Copy ========");
+                System.out.println(gv.getDotSource());
+                System.out.println("========= End Copy ========");
+                gv.increaseDpi();
+
+                //Type file
+                String type = "png";
+                //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
+                File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
+                //File out = new File(path+"."+ type);    // Windows
+                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
+                ImageIcon image = new ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png");
+                //lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));                
+                //lblImage.setIcon(image);
+                //lblImage.repaint();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } finally {
+                connection.desconectar();
+            }
+        }
+
+    }//GEN-LAST:event_btnGerarClusterActionPerformed
 
     private void GetClass() {
         ConexaoSQLLite connection = new ConexaoSQLLite();
@@ -823,6 +972,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGerarClass;
+    private javax.swing.JButton btnGerarCluster;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;

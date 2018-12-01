@@ -463,7 +463,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jButton10" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="805" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnGerarClass" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnGerarCluster" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="645" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="lblImage" max="32767" attributes="0"/>
@@ -474,7 +478,11 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jButton10" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jButton10" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnGerarClass" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnGerarCluster" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="lblImage" pref="430" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
@@ -487,10 +495,26 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton10">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Gerar"/>
+                    <Property name="text" type="java.lang.String" value="Pacotes"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton10ActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnGerarClass">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Classes"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGerarClassActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnGerarCluster">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Cluster"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGerarClusterActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
