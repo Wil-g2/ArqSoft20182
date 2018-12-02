@@ -457,12 +457,12 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             String tables = "CREATE TABLE IF NOT EXISTS project (id INTEGER PRIMARY KEY AUTOINCREMENT, origem VARCHAR(255) NOT NULL,tipo VARCHAR(30) NOT NULL,destino VARCHAR(255) NOT NULL)";
             String insert = "INSERT INTO project(origem,tipo,destino) VALUES(?,?,?);";
             String del = "DELETE FROM project";
-            String vi_packages = "create view IF NOT EXISTS vi_pacotes as  select distinct pacote1 as package from  pacotes;";
-            String vi_classes = "create view IF NOT EXISTS vi_classes as select distinct origem from project;";
-            String vi_superClass = "create view IF NOT EXISTS vi_superClass as select distinct destino as superClass from project where project.tipo = 'extends';";
-            String vi_interfaces = "create view IF NOT EXISTS vi_interfaces as select distinct destino as interface from project where project.tipo = 'implements';";
-            String vi_classAccess = "create view IF NOT EXISTS vi_classAccess as select distinct origem as source,destino as target from project where (tipo ='access' or tipo ='create' or tipo = 'declare') and (destino not like 'java%');";
-            String vi_classDeclare = "create view IF NOT EXISTS vi_classDeclare as select distinct origem as source, destino as target from project where (tipo = 'declare') and  ((destino like 'java%'));";
+            String vi_packages = "create view IF NOT EXISTS pacote as  select distinct pacote1 as package from  pacotes;";
+            String vi_classes = "create view IF NOT EXISTS classes as select distinct origem from project;";
+            String vi_superClass = "create view IF NOT EXISTS superClass as select distinct destino as superClass from project where project.tipo = 'extends';";
+            String vi_interfaces = "create view IF NOT EXISTS interfaces as select distinct destino as interface from project where project.tipo = 'implements';";
+            String vi_classAccess = "create view IF NOT EXISTS classAccess as select distinct origem as source,destino as target from project where (tipo ='access' or tipo ='create' or tipo = 'declare') and (destino not like 'java%');";
+            String vi_classDeclare = "create view IF NOT EXISTS classDeclare as select distinct origem as source, destino as target from project where (tipo = 'declare') and  ((destino like 'java%'));";
             if (connection.conectar()) {
                 try {
                     Statement stmt = connection.criarStatement();
@@ -773,7 +773,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
-        String pacotes = "select distinct package from vi_pacotes";
+        String pacotes = "select distinct package from pacotes";
         if (connection.conectar()) {
             try {
                 Statement stmt = connection.criarStatement();
@@ -826,8 +826,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         gv.addln(gv.start_graph());
 
         ConexaoSQLLite connection = new ConexaoSQLLite();
-        String classes = "select distinct origem from vi_classes";
-        String classesAccess = "select distinct source, target from vi_classAccess";
+        String classes = "select distinct origem from classes";
+        String classesAccess = "select distinct source, target from classAccess";
         if (connection.conectar()) {
             try {
                 Statement stmt = connection.criarStatement();
@@ -883,9 +883,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
-        String pacotes = "select distinct package from vi_pacotes";
-        String classes = "select distinct origem from vi_classes where origem like ?";
-        String classesAccess = "select distinct source, target from vi_classAccess";
+        String pacotes = "select distinct package from pacotes";
+        String classes = "select distinct origem from classes where origem like ?";
+        String classesAccess = "select distinct source, target from classAccess";
         if (connection.conectar()) {
             try {
                 Statement stmt = connection.criarStatement();
