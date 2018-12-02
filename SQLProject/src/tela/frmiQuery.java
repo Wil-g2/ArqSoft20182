@@ -9,6 +9,7 @@ import conexoes.ConexaoSQLLite;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -36,8 +37,8 @@ public class frmiQuery extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtQuery = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtResult = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setClosable(true);
         setIconifiable(true);
@@ -57,9 +58,18 @@ public class frmiQuery extends javax.swing.JInternalFrame {
             }
         });
 
-        txtResult.setColumns(20);
-        txtResult.setRows(5);
-        jScrollPane2.setViewportView(txtResult);
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -73,9 +83,10 @@ public class frmiQuery extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 804, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -83,40 +94,47 @@ public class frmiQuery extends javax.swing.JInternalFrame {
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(82, 82, 82)))
-                        .addGap(48, 48, 48)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jButton1)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(82, 82, 82))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String result = new String();
         ConexaoSQLLite connection = new ConexaoSQLLite();
         if (connection.conectar()) {
             try {
-                PreparedStatement prepareStatement = null;
-                //prepareStatement.setString(1, parameters[0].trim());
-                //prepareStatement.setString(2, parameters[1].trim());
+                PreparedStatement prepareStatement = null;                
                 prepareStatement = connection.preparesStatement(txtQuery.getText());
-                ResultSet rs =prepareStatement.executeQuery();
-                //if (rs.getInt("count")>1) {
-                    txtResult.setText("");
-                    while (rs.next()) {
-                        txtResult.append("origem:"+rs.getString("origem")+" tipo:"+rs.getString("tipo")+" destino:"+rs.getString("destino")+"\n");
-                    }
-                } catch (SQLException e) {
-
-                } finally {
-                    connection.desconectar();
+                ResultSet rs = prepareStatement.executeQuery();
+                DefaultTableModel tableModel = new DefaultTableModel();
+                jTable1.setAutoCreateRowSorter(true);                
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    tableModel.addColumn(rs.getMetaData().getColumnName(i));
                 }
+                result = "";
+                while (rs.next()) {
+                    Object[] objetos = new Object[rs.getMetaData().getColumnCount() + 1];
+                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                        objetos[i-1] = rs.getString(i);
+                    }
+                    tableModel.addRow(objetos);
+                }
+                jTable1.setModel(tableModel);
+            } catch (SQLException e) {
+
+            } finally {
+                connection.desconectar();
             }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
@@ -124,8 +142,8 @@ public class frmiQuery extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea txtQuery;
-    private javax.swing.JTextArea txtResult;
     // End of variables declaration//GEN-END:variables
 }
