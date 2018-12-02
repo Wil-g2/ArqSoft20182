@@ -84,15 +84,17 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
-        lblImage = new javax.swing.JLabel();
         jButton10 = new javax.swing.JButton();
         btnGerarClass = new javax.swing.JButton();
         btnGerarCluster = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        lblImage = new javax.swing.JLabel();
 
         jFileChooser1.setDialogTitle("");
 
         setClosable(true);
         setIconifiable(true);
+        setMaximizable(true);
         setTitle("Restrições");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -344,20 +346,22 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
+        jScrollPane5.setViewportView(lblImage);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jButton10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGerarClass)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGerarCluster)
-                .addGap(0, 645, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButton10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGerarClass)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGerarCluster))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 975, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -367,8 +371,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     .addComponent(btnGerarClass)
                     .addComponent(btnGerarCluster))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
-                .addGap(35, 35, 35))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Visualização", jPanel4);
@@ -379,7 +382,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 869, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 130, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -674,7 +677,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             JSONArray jsonArray = new JSONArray();
             ListModel<String> model = listRestriction.getModel();
             for (int i = 0; i < model.getSize(); i++) {
-                jsonArray.put(model.getElementAt(i));
+                if (model.getElementAt(i).contains("-")) {
+                    String[] temp = model.getElementAt(i).split("-");                    
+                    jsonArray.put("{source:"+temp[0]+", type:"+temp[1]+", target:"+temp[2]+"}");
+                }
                 gravaArq.println(model.getElementAt(i));
             }
             json.put("restricoes", jsonArray);
@@ -775,14 +781,14 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 ResultSet rs = prepareStatement.executeQuery();
                 while (rs.next()) {
                     if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
-                        gv.addln("\""+rs.getString(1) + "\" [shape=box];");
+                        gv.addln("\"" + rs.getString(1) + "\" [shape=box];");
                     }
                 }
                 PreparedStatement prepareStatementTipos = connection.preparesStatement(pacoteAccess);
                 ResultSet rsTipo = prepareStatementTipos.executeQuery();
                 while (rsTipo.next()) {
                     if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
-                        gv.addln("\""+rsTipo.getString(1) + "\" -> \"" + rsTipo.getString(2) + "\";");
+                        gv.addln("\"" + rsTipo.getString(1) + "\" -> \"" + rsTipo.getString(2) + "\";");
                     }
                 }
 
@@ -870,6 +876,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         //generate file DOT (graph description language) Classes			
         //path of file 
         String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
+        int cluster = 0;
         //FileWriter file;
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
@@ -886,7 +893,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 ResultSet rs = prepareStatement.executeQuery();
                 while (rs.next()) {
                     if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
-                        gv.addln("subgraph \"" + rs.getString(1) + " \" {");
+                        gv.addln("subgraph cluster_" + String.valueOf(cluster) + "{");
+                        cluster += 1;
                         gv.addln("node [style=filled];");
                         stmt = connection.criarStatement();
                         prepareStatement = connection.preparesStatement(classes);
@@ -897,7 +905,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                                 gv.addln("\"" + rsClass.getString(1) + "\";");
                             }
                         }
-                        gv.addln("label = \""+ rs.getString(1) +"\";");
+                        gv.addln("label = \"" + rs.getString(1) + "\";");
                         gv.addln("}");
                     }
                 }
@@ -908,7 +916,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
                     }
                 }
-                gv.addln("Projeto [shape=Mdiamond];");               
+                gv.addln("Projeto [shape=Mdiamond];");
 
                 gv.add(gv.end_graph());
                 //out of file .dot 
@@ -996,6 +1004,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblImage;
     private javax.swing.JList<String> listClass;
