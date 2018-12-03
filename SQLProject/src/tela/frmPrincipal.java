@@ -23,7 +23,7 @@ public class frmPrincipal extends javax.swing.JFrame {
      */
     public frmPrincipal() {
         this.setExtendedState(MAXIMIZED_BOTH);
-        URL url = this.getClass().getResource("..\\icons\\logoSQL128x128.png");
+        URL url = this.getClass().getResource("../icons/logoSQL128x128.png");
         Image imagemTitulo = Toolkit.getDefaultToolkit().getImage(url);
         this.setIconImage(imagemTitulo);
         initComponents();

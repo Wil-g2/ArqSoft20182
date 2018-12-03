@@ -477,7 +477,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     stmt.execute(vi_classDeclare);
 
                     Scanner ler = new Scanner(System.in);
-                    String nome = txtPath.getText() + "\\dependencies.txt";
+                    String nome = txtPath.getText() + "/dependencies.txt";
                     try {
                         FileReader arq = new FileReader(nome);
                         BufferedReader lerArq = new BufferedReader(arq);
@@ -773,7 +773,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
-        String pacotes = "select distinct package from pacotes";
+        String pacotes = "select distinct package from pacote";
         if (connection.conectar()) {
             try {
                 Statement stmt = connection.criarStatement();
@@ -883,7 +883,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
-        String pacotes = "select distinct package from pacotes";
+        String pacotes = "select distinct package from pacote";
         String classes = "select distinct origem from classes where origem like ?";
         String classesAccess = "select distinct source, target from classAccess";
         if (connection.conectar()) {
