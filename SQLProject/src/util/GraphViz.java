@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 /**
  * <dl>
@@ -398,6 +399,10 @@ public class GraphViz
         }
 
         this.graph = sb;
+    }
+
+    public void writeGraphToFile(byte[] graph, PrintStream out) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 } // end of class GraphViz

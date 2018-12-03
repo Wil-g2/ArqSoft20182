@@ -243,7 +243,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 884, Short.MAX_VALUE)
+            .addGap(0, 994, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -353,15 +353,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButton10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGerarClass)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGerarCluster))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 975, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButton10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGerarClass)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGerarCluster)
+                .addContainerGap(747, Short.MAX_VALUE))
+            .addComponent(jScrollPane5)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,9 +378,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 869, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 130, Short.MAX_VALUE))
+            .addComponent(jTabbedPane1)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -680,8 +676,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             ListModel<String> model = listRestriction.getModel();
             for (int i = 0; i < model.getSize(); i++) {
                 if (model.getElementAt(i).contains("-")) {
-                    String[] temp = model.getElementAt(i).split("-");                    
-                    jsonArray.put("{source:"+temp[0]+", type:"+temp[1]+", target:"+temp[2]+"}");
+                    String[] temp = model.getElementAt(i).split("-");
+                    jsonArray.put("{source:" + temp[0] + ", type:" + temp[1] + ", target:" + temp[2] + "}");
                 }
                 gravaArq.println(model.getElementAt(i));
             }
@@ -767,9 +763,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
         //generate file DOT (graph description language)			
-        //path of file 
-        String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
-        //FileWriter file;
+        String path = "view/pacotes/";
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
 
@@ -802,12 +796,17 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 gv.increaseDpi();
 
                 //Type file
+                File dir = new File(path);
+                dir.mkdir();
+                File out = null;
                 String type = "png";
-                //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
-                File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
-                //File out = new File(path+"."+ type);    // Windows
+                if (System.getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
+                    out = new File(path + gv.getImageDpi() + "." + type);   // Linux			
+                } else {
+                    out = new File(path + gv.getImageDpi() + type);    // Windows
+                }
                 gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
-                lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));
+                lblImage.setIcon(new javax.swing.ImageIcon(path+"106.png"));
                 lblImage.repaint();
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
@@ -821,9 +820,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
         //generate file DOT (graph description language) Classes			
-        //path of file 
-        String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
-        //FileWriter file;
+        String path = "view/class/";
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
 
@@ -856,13 +853,18 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 gv.increaseDpi();
 
                 //Type file
+                File dir = new File(path);
+                dir.mkdir();
+                File out = null;
                 String type = "png";
-                //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
-                File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
-                //File out = new File(path+"."+ type);    // Windows
+                if (System.getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
+                    out = new File(path + gv.getImageDpi() + "." + type);   // Linux			
+                } else {
+                    out = new File(path + gv.getImageDpi() + type);    // Windows
+                }
+                
                 gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
-                ImageIcon image = new ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png");
-                //lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));                
+                ImageIcon image = new ImageIcon(path+"106.png");
                 lblImage.setIcon(image);
                 lblImage.repaint();
             } catch (SQLException e) {
@@ -876,10 +878,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void btnGerarClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClusterActionPerformed
         //generate file DOT (graph description language) Classes			
-        //path of file 
-        String path = "F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject";
+        String path = "view/cluster/";
         int cluster = 0;
-        //FileWriter file;
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
 
@@ -918,7 +918,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
                     }
                 }
-                gv.addln("Projeto [shape=Mdiamond];");
+                //gv.addln("Projeto [shape=Mdiamond];");
 
                 gv.add(gv.end_graph());
                 //out of file .dot 
@@ -928,20 +928,25 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 gv.increaseDpi();
 
                 //Type file
+                File dir = new File(path);
+                dir.mkdir();                
+                File out = null;
                 String type = "png";
-                //File out = new File(+gv.getImageDpi()+"."+ type);   // Linux			
-                File out = new File(path + "\\" + gv.getImageDpi() + "." + type);
-                //File out = new File(path+"."+ type);    // Windows
+                if (System.getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
+                    out = new File(path + gv.getImageDpi() + "." + type);   // Linux			
+                } else {
+                    out = new File(path + gv.getImageDpi() + type);    // Windows
+                }
                 gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
-                ImageIcon image = new ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png");
-                //lblImage.setIcon(new javax.swing.ImageIcon("F:\\Desenvolvimento\\Projetos\\ArqSoft20182\\SQLProject\\106.png"));                
-                //lblImage.setIcon(image);
-                //lblImage.repaint();
+                ImageIcon image = new ImageIcon(path+"106.png");
+                lblImage.setIcon(image);
+                lblImage.repaint();
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, e.getMessage());
             } finally {
                 connection.desconectar();
+               
             }
         }
 
