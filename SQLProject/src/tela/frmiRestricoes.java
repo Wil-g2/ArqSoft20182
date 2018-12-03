@@ -457,6 +457,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             String tables = "CREATE TABLE IF NOT EXISTS project (id INTEGER PRIMARY KEY AUTOINCREMENT, origem VARCHAR(255) NOT NULL,tipo VARCHAR(30) NOT NULL,destino VARCHAR(255) NOT NULL)";
             String insert = "INSERT INTO project(origem,tipo,destino) VALUES(?,?,?);";
             String del = "DELETE FROM project";
+            String historico = "create table if not exists historico (historico varchar(255))";
             String vi_packages = "create view IF NOT EXISTS pacote as  select distinct pacote1 as package from  pacotes;";
             String vi_classes = "create view IF NOT EXISTS classes as select distinct origem from project;";
             String vi_superClass = "create view IF NOT EXISTS superClass as select distinct destino as superClass from project where project.tipo = 'extends';";
@@ -469,6 +470,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     //preparação do banco de dados
                     stmt.execute(tables);
                     stmt.execute(del);
+                    stmt.execute(historico);
                     stmt.execute(vi_packages);
                     stmt.execute(vi_classes);
                     stmt.execute(vi_superClass);

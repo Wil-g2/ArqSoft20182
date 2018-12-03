@@ -60,6 +60,7 @@ public class frmiQuery extends javax.swing.JInternalFrame {
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
             }
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -254,6 +255,7 @@ public class frmiQuery extends javax.swing.JInternalFrame {
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Erro ao carregar dados do Banco." + e.getMessage(), "Atenção", JOptionPane.ERROR_MESSAGE);
             } finally {
+                carregarHistorico();
                 connection.desconectar();
             }
         }
@@ -267,21 +269,69 @@ public class frmiQuery extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbBrowseActionPerformed
 
     private void cbBrowseKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbBrowseKeyPressed
-       atalhoExecutar(evt);
+        atalhoExecutar(evt);
     }//GEN-LAST:event_cbBrowseKeyPressed
 
     private void txtQueryKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQueryKeyPressed
-       atalhoExecutar(evt);
+        atalhoExecutar(evt);
     }//GEN-LAST:event_txtQueryKeyPressed
 
     private void btnExecutarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnExecutarKeyPressed
         atalhoExecutar(evt);
     }//GEN-LAST:event_btnExecutarKeyPressed
 
-    private void atalhoExecutar(java.awt.event.KeyEvent evt){
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        salvarHistorico();
+    }//GEN-LAST:event_formInternalFrameClosing
+
+    private void atalhoExecutar(java.awt.event.KeyEvent evt) {
         if (txtQuery.getText() != "" & !txtQuery.getText().isEmpty()) {
             if (evt.getKeyCode() == KeyEvent.VK_F5) {
                 btnExecutar.doClick();
+            }
+        }
+    }
+
+    private void carregarHistorico() {
+        String query = "select historico from historico";
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+        if (connection.conectar()) {
+            try {
+                modelHistorico.clear();
+                PreparedStatement prepareStatement = null;
+                prepareStatement = connection.preparesStatement(query);
+                ResultSet rs = prepareStatement.executeQuery();
+                while (rs.next()) {
+                    modelHistorico.addElement(rs.getString(1));
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Erro ao carregar dados do Banco." + e.getMessage(), "Atenção", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                connection.desconectar();
+            }
+        }
+    }
+
+    private void salvarHistorico() {
+        String delete = "delete from historico";
+        String query = "insert into historico values (?)";
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+
+        if (connection.conectar()) {
+            try {
+                PreparedStatement prepareStatement = null;
+                prepareStatement = connection.preparesStatement(delete);
+                prepareStatement.execute();
+                for (int i = 0; i < modelHistorico.getSize(); i++) {
+                    prepareStatement = null;
+                    prepareStatement = connection.preparesStatement(query);
+                    prepareStatement.setString(1, (String) modelHistorico.getElementAt(i));
+                    prepareStatement.execute();
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Erro ao carregar dados do Banco." + e.getMessage(), "Atenção", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                connection.desconectar();
             }
         }
     }
