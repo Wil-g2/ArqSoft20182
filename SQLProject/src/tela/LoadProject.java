@@ -134,7 +134,7 @@ public class LoadProject extends javax.swing.JFrame {
                     stmt.execute(tables);
                     stmt.execute(del);
                     Scanner ler = new Scanner(System.in);                    
-                    String nome = txtPath.getText() + "\\dependencies.txt";
+                    String nome = txtPath.getText() + "/dependencies.txt";
                     try {
                         FileReader arq = new FileReader(nome);
                         BufferedReader lerArq = new BufferedReader(arq);
