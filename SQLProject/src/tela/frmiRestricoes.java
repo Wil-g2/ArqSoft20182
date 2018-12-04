@@ -1030,8 +1030,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     listColuns.add(rs.getString(1));
                     tableModel.addColumn(rs.getString(1));
                 }                                                
-                Object[] objetos = new Object[listColuns.size()];
-                
+                Object[] objetos = new Object[listColuns.size()+1];
+                rs.close();
+                rs = prepareStatement.executeQuery();
                 while (rs.next()) {
                     objetos[0] = rs.getString(1);
                     int col = 1;                     
@@ -1046,9 +1047,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         }else{
                           objetos[col]= "";
                         }
+                        col+=1;
                     }                                        
                     tableModel.addRow(objetos);
-                    
+                                        
                 }                
                 tbleMatriz.setModel(tableModel);
             } catch (SQLException e) {
