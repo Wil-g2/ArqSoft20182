@@ -68,7 +68,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         listClass = new javax.swing.JList<>();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnAccess = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -157,10 +157,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton3.setText("Access");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAccess.setText("Access");
+        btnAccess.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAccessActionPerformed(evt);
             }
         });
 
@@ -193,7 +193,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         rgDenied.setText("Denied");
 
         listClass2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { " " };
+            String[] strings = { "" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
@@ -259,7 +259,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                                                 .addGap(14, 14, 14)
                                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(btnAccess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                     .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -305,7 +305,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGap(29, 29, 29)
-                            .addComponent(jButton3)
+                            .addComponent(btnAccess)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jButton4)
                             .addGap(7, 7, 7)
@@ -602,9 +602,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnAccessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccessActionPerformed
         String classe1 = listClass.getSelectedValue();
-        String classe2 = listClass2.getSelectedValue();
+        String classe2 = "";//listClass2.getSelectedValue();
+        for (String s :listClass2.getSelectedValuesList()){
+            classe2 += s+",";
+        }
+        classe2 = classe2.substring(0,classe2.length()-1);
         if (rgRequired.isSelected()) {
             modelRestriciton.addElement(classe1 + "- Required Access -" + classe2);
         } else if (rgDenied.isSelected()) {
@@ -613,7 +617,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             modelRestriciton.addElement(classe1 + "- Can Access -" + classe2);
         }
         listRestriction.setModel(modelRestriciton);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAccessActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         String classe1 = listClass.getSelectedValue();
@@ -713,7 +717,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         txtResult.setText("");
         ConexaoSQLLite connection = new ConexaoSQLLite();
-        String canAccess = "select count(*) as count from project where(tipo = \"access\" or tipo = \"declare\") and origem = ? and destino = ? ";
+        String canAccess = "select count(*) as count from project where(tipo = \"access\" or tipo = \"declare\") and origem = ? and destino in(?)";
         String extend = "select count(*) as count from project where tipo = \"extend\" and origem = ? and destino = ? ";
         String declare = "select count(*) as count from project where tipo = \"declare\" and origem = ? and destino = ? ";
         String implement = "select count(*) as count from project where tipo = \"implement\" and origem = ? and destino = ? ";
@@ -733,9 +737,14 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     } else if (model.getElementAt(i).contains("Can Extend") || model.getElementAt(i).contains("Required Extend") || model.getElementAt(i).contains("Denied Extend")) {
                         prepareStatement = connection.preparesStatement(implement);
                     }
+                    String parameter2 = "";                                       
                     parameters = model.getElementAt(i).split("-");
-                    prepareStatement.setString(1, parameters[0].trim());
-                    prepareStatement.setString(2, parameters[2].trim());
+                    prepareStatement.setString(1, parameters[0].trim());                  
+                    for (String tmp : parameters[2].split(",")){
+                        parameter2+="\""+tmp+"\",";
+                    }
+                    parameter2+=parameter2.substring(0,parameter2.length()-1);
+                    prepareStatement.setString(2, parameter2);
                     ResultSet rs = prepareStatement.executeQuery();
                     if (rs.getInt(1) > 0) {
                         if (model.getElementAt(i).contains("Denied")) { //Se for Deined e encotrar ocorrência
@@ -987,13 +996,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAccess;
     private javax.swing.JButton btnGerarClass;
     private javax.swing.JButton btnGerarCluster;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
