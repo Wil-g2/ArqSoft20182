@@ -86,10 +86,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jButton9 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
+        jButton11 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jButton10 = new javax.swing.JButton();
         btnGerarClass = new javax.swing.JButton();
-        btnGerarCluster = new javax.swing.JButton();
+        btnGerarGeral = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         lblImage = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
@@ -246,11 +247,21 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         txtResult.setRows(5);
         jScrollPane4.setViewportView(txtResult);
 
+        jButton11.setText("Carregar Pacotes");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 994, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(177, 177, 177)
+                .addComponent(jButton11)
+                .addContainerGap(689, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -294,7 +305,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton11)
+                .addContainerGap(463, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addContainerGap()
@@ -346,10 +360,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
-        btnGerarCluster.setText("Cluster");
-        btnGerarCluster.addActionListener(new java.awt.event.ActionListener() {
+        btnGerarGeral.setText("Geral");
+        btnGerarGeral.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGerarClusterActionPerformed(evt);
+                btnGerarGeralActionPerformed(evt);
             }
         });
 
@@ -364,8 +378,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGerarClass)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGerarCluster)
-                .addContainerGap(747, Short.MAX_VALUE))
+                .addComponent(btnGerarGeral)
+                .addContainerGap(760, Short.MAX_VALUE))
             .addComponent(jScrollPane5)
         );
         jPanel4Layout.setVerticalGroup(
@@ -374,7 +388,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton10)
                     .addComponent(btnGerarClass)
-                    .addComponent(btnGerarCluster))
+                    .addComponent(btnGerarGeral))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
         );
@@ -936,7 +950,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnGerarClassActionPerformed
 
-    private void btnGerarClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClusterActionPerformed
+    private void btnGerarGeralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarGeralActionPerformed
         //generate file DOT (graph description language) Classes			
         String path = "view/cluster/";
         int cluster = 0;
@@ -1010,7 +1024,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         }
 
-    }//GEN-LAST:event_btnGerarClusterActionPerformed
+    }//GEN-LAST:event_btnGerarGeralActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         String SqlColunas = "select distinct origem from classes  order by origem ";
@@ -1024,34 +1038,33 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 prepareStatement = connection.preparesStatement(SqlColunas);
                 ResultSet rs = prepareStatement.executeQuery();
                 DefaultTableModel tableModel = new DefaultTableModel();
-                
+
                 tableModel.addColumn("");
-                while (rs.next()) {                    
+                while (rs.next()) {
                     listColuns.add(rs.getString(1));
                     tableModel.addColumn(rs.getString(1));
-                }                                                
-                Object[] objetos = new Object[listColuns.size()+1];
+                }
+                Object[] objetos = new Object[listColuns.size() + 1];
                 rs.close();
                 rs = prepareStatement.executeQuery();
                 while (rs.next()) {
                     objetos[0] = rs.getString(1);
-                    int col = 1;                     
+                    int col = 1;
                     for (String s : listColuns) {
                         PreparedStatement prepareStatementLinha = null;
                         prepareStatementLinha = connection.preparesStatement(SqlVerificar);
-                        prepareStatementLinha.setString(1,rs.getString(1));
-                        prepareStatementLinha.setString(2,s);
+                        prepareStatementLinha.setString(1, rs.getString(1));
+                        prepareStatementLinha.setString(2, s);
                         ResultSet rsLin = prepareStatementLinha.executeQuery();
-                        if (rsLin.getInt(1)>0){
-                          objetos[col]= "X";
-                        }else{
-                          objetos[col]= "";
+                        if (rsLin.getInt(1) > 0) {
+                            objetos[col] = "X";
+                        } else {
+                            objetos[col] = "";
                         }
-                        col+=1;
-                    }                                        
+                        col += 1;
+                    }
                     tableModel.addRow(objetos);
-                                        
-                }                
+                }
                 tbleMatriz.setModel(tableModel);
             } catch (SQLException e) {
 
@@ -1060,6 +1073,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+       GetPackage();
+    }//GEN-LAST:event_jButton11ActionPerformed
 
     private void GetClass() {
         ConexaoSQLLite connection = new ConexaoSQLLite();
@@ -1095,13 +1112,43 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         }
     }
+
+    private void GetPackage() {
+        ConexaoSQLLite connection = new ConexaoSQLLite();
+        String pacotes = "select distinct * from pacote";
+        if (connection.conectar()) {
+            try {
+                DefaultListModel listModel = new DefaultListModel();
+                DefaultListModel listModel2 = new DefaultListModel();
+                Statement stmt = connection.criarStatement();
+                PreparedStatement prepareStatement = connection.preparesStatement(pacotes);
+                ResultSet rs = prepareStatement.executeQuery();
+                while (rs.next()) {
+                    listClass.removeAll();
+                    listClass2.removeAll();
+                    listModel.addElement(rs.getString(1));
+                    listModel2.addElement(rs.getString(1));
+
+                }                
+                listClass.setModel(listModel);
+                listClass2.setModel(listModel2);
+
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } finally {
+                connection.desconectar();
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAccess;
     private javax.swing.JButton btnGerarClass;
-    private javax.swing.JButton btnGerarCluster;
+    private javax.swing.JButton btnGerarGeral;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
