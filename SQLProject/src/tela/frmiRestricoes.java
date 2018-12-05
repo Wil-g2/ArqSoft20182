@@ -6,6 +6,8 @@
 package tela;
 
 import conexoes.ConexaoSQLLite;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -83,7 +85,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         listRestriction = new javax.swing.JList<>();
         jButton5 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        btnValidar = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
         jButton11 = new javax.swing.JButton();
@@ -235,11 +237,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/validate16x16.png"))); // NOI18N
-        jButton9.setText("Validar");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
+        btnValidar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/validate16x16.png"))); // NOI18N
+        btnValidar.setText("Validar");
+        btnValidar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+                btnValidarActionPerformed(evt);
             }
         });
 
@@ -299,7 +301,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButton8)))))
                         .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(jButton9)
+                            .addComponent(btnValidar)
                             .addGap(788, 788, 788)))
                     .addGap(6, 6, 6)))
         );
@@ -338,7 +340,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(rgDenied)))
                     .addGap(18, 18, 18)
-                    .addComponent(jButton9)
+                    .addComponent(btnValidar)
                     .addGap(4, 4, 4)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                     .addContainerGap()))
@@ -367,6 +369,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
+        lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImage.setToolTipText("");
+        lblImage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jScrollPane5.setViewportView(lblImage);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -395,6 +400,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Visualização", jPanel4);
 
+        tbleMatriz.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        tbleMatriz.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        tbleMatriz.setForeground(new java.awt.Color(0, 0, 0));
         tbleMatriz.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -406,9 +414,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
             }
         ));
+        tbleMatriz.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tbleMatriz.setGridColor(new java.awt.Color(51, 51, 51));
+        tbleMatriz.setShowGrid(true);
         jScrollPane6.setViewportView(tbleMatriz);
 
         jButton3.setText("Gerar");
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -475,10 +487,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jProgressBar1.setValue(0);
         jFileChooser1.setDialogTitle("Selecione o projeto");
         jFileChooser1.setFileSelectionMode(jFileChooser1.DIRECTORIES_ONLY);
-        //FileFilter filter = new FileNameExtensionFilter("Dependencias Texto", "txt","text");
-        //jFileChooser1.addChoosableFileFilter(filter);
-        //jFileChooser1.setAcceptAllFileFilterUsed(false);
-        //jFileChooser1.setMultiSelectionEnabled(true);
         int file = jFileChooser1.showOpenDialog(this);
         if (file == jFileChooser1.APPROVE_OPTION) {
             File f = jFileChooser1.getSelectedFile();
@@ -686,7 +694,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         String classe1 = listClass.getSelectedValue();
-        String classe2 = listClass2.getSelectedValue();
+        String classe2 = "";//listClass2.getSelectedValue();
+        for (String s : listClass2.getSelectedValuesList()) {
+            classe2 += s + ",";
+        }
         if (rgRequired.isSelected()) {
             modelRestriciton.addElement(classe1 + "- Required Extend -" + classe2);
         } else if (rgDenied.isSelected()) {
@@ -700,7 +711,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         String classe1 = listClass.getSelectedValue();
-        String classe2 = listClass2.getSelectedValue();
+        String classe2 = "";//listClass2.getSelectedValue();
+        for (String s : listClass2.getSelectedValuesList()) {
+            classe2 += s + ",";
+        }
         if (rgRequired.isSelected()) {
             modelRestriciton.addElement(classe1 + "- Required Implement -" + classe2);
         } else if (rgDenied.isSelected()) {
@@ -714,7 +728,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         String classe1 = listClass.getSelectedValue();
-        String classe2 = listClass2.getSelectedValue();
+        String classe2 = "";//listClass2.getSelectedValue();
+        for (String s : listClass2.getSelectedValuesList()) {
+            classe2 += s + ",";
+        }       
         if (rgRequired.isSelected()) {
             modelRestriciton.addElement(classe1 + "- Required Declare -" + classe2);
         } else if (rgDenied.isSelected()) {
@@ -779,7 +796,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void btnValidarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidarActionPerformed
         txtResult.setText("");
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String canAccess = "select count(*) as count from project where(tipo = \"access\" or tipo = \"declare\") and origem = ? and destino in(?)";
@@ -816,9 +833,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                             txtResult.append("(DIVERGÊNCIA) - " + model.getElementAt(i) + "\n");
                         }
                     } else {
-                        if (model.getElementAt(i).contains("Can Access")) { //Se for Access e não encotrar ocorrência
-                            txtResult.append("(AUSÊNCIA NÃO OBRIGATÓRIA) - " + model.getElementAt(i) + "\n");
-                        } else if (model.getElementAt(i).contains("Required")) { //Se for Required e não encotrar ocorrência
+                        if (model.getElementAt(i).contains("Required")) { //Se for Required e não encotrar ocorrência
                             txtResult.append("(AUSÊNCIA) - " + model.getElementAt(i) + "\n");
                         }
                     }
@@ -832,7 +847,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         }
 
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_btnValidarActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
@@ -961,6 +976,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
         String pacotes = "select distinct package from pacote";
         String classes = "select distinct origem from classes where origem like ?";
+        //String classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
         String classesAccess = "select distinct source, target from classAccess";
         if (connection.conectar()) {
             try {
@@ -1038,7 +1054,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 prepareStatement = connection.preparesStatement(SqlColunas);
                 ResultSet rs = prepareStatement.executeQuery();
                 DefaultTableModel tableModel = new DefaultTableModel();
-
+                tbleMatriz.setIntercellSpacing(new Dimension(1, 2));
                 tableModel.addColumn("");
                 while (rs.next()) {
                     listColuns.add(rs.getString(1));
@@ -1057,7 +1073,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         prepareStatementLinha.setString(2, s);
                         ResultSet rsLin = prepareStatementLinha.executeQuery();
                         if (rsLin.getInt(1) > 0) {
-                            objetos[col] = "X";
+                            objetos[col] = "\u25CF";
                         } else {
                             objetos[col] = "";
                         }
@@ -1075,7 +1091,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-       GetPackage();
+        GetPackage();
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void GetClass() {
@@ -1129,7 +1145,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     listModel.addElement(rs.getString(1));
                     listModel2.addElement(rs.getString(1));
 
-                }                
+                }
                 listClass.setModel(listModel);
                 listClass2.setModel(listModel2);
 
@@ -1146,6 +1162,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGerarClass;
     private javax.swing.JButton btnGerarGeral;
     private javax.swing.ButtonGroup btnGroup;
+    private javax.swing.JButton btnValidar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
@@ -1156,7 +1173,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
