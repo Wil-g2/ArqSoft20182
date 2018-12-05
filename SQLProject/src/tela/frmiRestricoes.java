@@ -914,7 +914,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
         //generate file DOT (graph description language) Classes			
         String sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' ";
-        String sqlRestrictionArrow = "select source,target,result from violation where source = ? and and target = ?  result in ('A','D') ";
+        String sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
         String path = null;
         if (chbApiJava.isSelected()) {
             path = "view/classGeral/";
@@ -942,9 +942,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
                         gv.addln("\"" + rs.getString(1) + "\"" + " [weight=8];");
                         PreparedStatement ps = connection.preparesStatement(sqlRestriction);
-                        ps.setString(1,rs.getString(1));
+                        ps.setString(1, rs.getString(1));
                         ResultSet rsRestriction = ps.executeQuery();
-                        while(rsRestriction.next()){
+                        while (rsRestriction.next()) {
                             gv.addln("\"" + rsRestriction.getString(2) + "\"" + " [weight=8, style=filled, color=\"0.499 0.386 1.000\"];");
                         }
                         rsRestriction.close();
@@ -954,8 +954,35 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 PreparedStatement prepareStatementTipos = connection.preparesStatement(classesAccess);
                 ResultSet rsTipo = prepareStatementTipos.executeQuery();
                 while (rsTipo.next()) {
+                    gv.addln("edge [color=black];");
                     if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
-                        gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                        PreparedStatement ps = connection.preparesStatement(sqlRestrictionArrow);
+                        ps.setString(1, rsTipo.getString(1));
+                        ps.setString(2, rsTipo.getString(2));
+                        ResultSet rsRestriction = ps.executeQuery();
+                        while (rsRestriction.next()) {
+                            if (rsRestriction.getString(3).equals("D")) {
+                                gv.addln("edge [color=red];");
+                            } else {
+                                gv.addln("edge [color=black];");
+                            }
+                        }
+                        ps.close();
+                        rsRestriction.close();
+                        if (!gv.getDotSource().contains("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";")) {
+                            gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                        }
+                        ps = connection.preparesStatement(sqlRestriction);
+                        ps.setString(1, rsTipo.getString(1));
+                        rsRestriction = ps.executeQuery();
+                        while (rsRestriction.next()) {
+                            if (!gv.getDotSource().contains("\"" + rsRestriction.getString(1) + "\"" + "->" + "\"" + rsRestriction.getString(2) + "\"" + ";")) {
+                                gv.addln("edge [color=blue];");
+                                gv.addln("\"" + rsRestriction.getString(1) + "\"" + "->" + "\"" + rsRestriction.getString(2) + "\"" + ";");
+                            }
+                        }
+                        rsRestriction.close();
+                        ps.close();
                     }
                 }
 
