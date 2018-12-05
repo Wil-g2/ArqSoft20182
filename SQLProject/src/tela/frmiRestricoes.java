@@ -521,7 +521,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         }
                     }
                 }.start();
-                Thread.sleep(1000);
+                Thread.sleep(2000);
                 //JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
                 Properties props = new Properties();
                 FileOutputStream config = new FileOutputStream("config.properties");
@@ -539,6 +539,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             String tables = "CREATE TABLE IF NOT EXISTS project (id INTEGER PRIMARY KEY AUTOINCREMENT, origem VARCHAR(255) NOT NULL,tipo VARCHAR(30) NOT NULL,destino VARCHAR(255) NOT NULL)";
             String insert = "INSERT INTO project(origem,tipo,destino) VALUES(?,?,?);";
             String del = "DELETE FROM project";
+            String violation = "create table if not exists violation (source varchar(255), restriction varchar(255), target varchar(255), result varchar(1))";
             String historico = "create table if not exists historico (historico varchar(255))";
             String vi_packages = "create view IF NOT EXISTS pacote as  select distinct pacote1 as package from  pacotes;";
             String vi_classes = "create view IF NOT EXISTS classes as select distinct origem from project;";
@@ -552,6 +553,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     //preparação do banco de dados
                     stmt.execute(tables);
                     stmt.execute(del);
+                    stmt.execute(violation);
                     stmt.execute(historico);
                     stmt.execute(vi_packages);
                     stmt.execute(vi_classes);
@@ -654,38 +656,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        ConexaoSQLLite connection = new ConexaoSQLLite();
-        String classes = "select distinct origem from project";
-        String tipos = "select distinct destino from project";
-        if (connection.conectar()) {
-            try {
-                DefaultListModel listModel = new DefaultListModel();
-                DefaultListModel listModel2 = new DefaultListModel();
-                Statement stmt = connection.criarStatement();
-                PreparedStatement prepareStatement = connection.preparesStatement(classes);
-                ResultSet rs = prepareStatement.executeQuery();
-                while (rs.next()) {
-                    listClass.removeAll();
-                    listClass2.removeAll();
-                    listModel.addElement(rs.getString("origem"));
-                    listModel2.addElement(rs.getString("origem"));
-
-                }
-                PreparedStatement prepareStatementTipos = connection.preparesStatement(tipos);
-                ResultSet rsTipo = prepareStatementTipos.executeQuery();
-                while (rsTipo.next()) {
-                    listModel2.addElement(rsTipo.getString("destino"));
-                }
-                listClass.setModel(listModel);
-                listClass2.setModel(listModel2);
-
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            } finally {
-                connection.desconectar();
-            }
-        }
+        getClasses();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAccessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccessActionPerformed
@@ -812,6 +783,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private void btnValidarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidarActionPerformed
         List<String> violation = new ArrayList<String>();
         txtResult.setText("");
+        String delViolantion = "delete from violation";
+        String insertViolation = "insert into violation values (?,?,?,?)";
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String canAccess = "select count(*) as count from project where(tipo = \"access\" or tipo = \"declare\") and origem = ? and destino in(?)";
         String extend = "select count(*) as count from project where tipo = \"extend\" and origem = ? and destino = ? ";
@@ -822,6 +795,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             try {
                 ListModel<String> model = listRestriction.getModel();
                 PreparedStatement prepareStatement = null;
+                prepareStatement = connection.preparesStatement(delViolantion);
+                prepareStatement.execute();
+
                 String[] parameters = null;
                 for (int i = 0; i < model.getSize(); i++) {
                     if (model.getElementAt(i).contains("Can Access") || model.getElementAt(i).contains("Required Access") || model.getElementAt(i).contains("Denied Access")) {
@@ -839,15 +815,23 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     for (String tmp : parameters[2].split(",")) {
                         prepareStatement.setString(2, tmp);
                         ResultSet rs = prepareStatement.executeQuery();
+                        PreparedStatement prepareStatementInsert = connection.preparesStatement(insertViolation);
+                        prepareStatementInsert.setString(1, parameters[0].trim());
+                        prepareStatementInsert.setString(3, tmp);
                         if (rs.getInt(1) > 0) {
                             if (model.getElementAt(i).contains("Denied")) { //Se for Deined e encotrar ocorrência
+                                prepareStatementInsert.setString(2, "Denied");
+                                prepareStatementInsert.setString(4, "D");
                                 violation.add("(DIVERGÊNCIA) - " + parameters[0].trim() + " " + parameters[1].trim() + " " + tmp + "\n");
                             }
                         } else {
                             if (model.getElementAt(i).contains("Required")) { //Se for Required e não encotrar ocorrência
+                                prepareStatementInsert.setString(2, "Required");
+                                prepareStatementInsert.setString(4, "A");
                                 violation.add("(AUSÊNCIA) - " + parameters[0].trim() + " " + parameters[1].trim() + " " + tmp + "\n");
                             }
                         }
+                        prepareStatementInsert.execute();
                     }
                 }
                 if (violation.isEmpty() | violation.size() <= 0) {
@@ -857,7 +841,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         txtResult.append(s);
                     }
                 }
-
+                prepareStatement.close();
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -1137,6 +1121,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void getClasses() {
+        modelRestriciton.clear();
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String classes = "select distinct origem from project";
         String tipos = "select distinct destino from project";
@@ -1159,6 +1144,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 while (rsTipo.next()) {
                     listModel2.addElement(rsTipo.getString("destino"));
                 }
+                rs.close();
+                rsTipo.close();
                 listClass.setModel(listModel);
                 listClass2.setModel(listModel2);
 
@@ -1172,6 +1159,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }
 
     private void getPackage() {
+        modelRestriciton.clear();
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String pacotes = "select distinct * from pacote";
         if (connection.conectar()) {
@@ -1188,6 +1176,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     listModel2.addElement(rs.getString(1));
 
                 }
+                rs.close();
                 listClass.setModel(listModel);
                 listClass2.setModel(listModel2);
 

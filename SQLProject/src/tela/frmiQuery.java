@@ -242,7 +242,7 @@ public class frmiQuery extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_listHistoricoKeyPressed
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-        String query = "select name from sqlite_master where type in ('table' ,'view') and name <> 'sqlite_sequence' and name <> 'historico'";
+        String query = "select name from sqlite_master where type in ('table' ,'view') and name <> 'sqlite_sequence' and name <> 'historico' and name <> 'violation' ";
         ConexaoSQLLite connection = new ConexaoSQLLite();
         if (connection.conectar()) {
             try {
