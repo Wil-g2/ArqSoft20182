@@ -828,11 +828,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         } else if (model.getElementAt(i).contains("Can Extend") || model.getElementAt(i).contains("Required Extend") || model.getElementAt(i).contains("Denied Extend")) {
                             prepareStatement = connection.preparesStatement(implement);
                         }
-                    }else{
+                    } else {
                         if (model.getElementAt(i).contains("Can Access") || model.getElementAt(i).contains("Required Access") || model.getElementAt(i).contains("Denied Access")) {
                             prepareStatement = connection.preparesStatement(pacotes);
                         }
-                    } 
+                    }
                     String parameter2 = "";
                     parameters = model.getElementAt(i).split("-");
                     prepareStatement.setString(1, parameters[0].trim());
@@ -993,9 +993,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                         }
                         ps.close();
                         rsRestriction.close();
-                        if (!gv.getDotSource().contains("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";")) {
-                            gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
-                        }
+                        
+                        //VERIFICAR 
+                        //if (!gv.getDotSource().contains("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";")) {
+                        gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                        //}
                         ps = connection.preparesStatement(sqlRestriction);
                         ps.setString(1, rsTipo.getString(1));
                         rsRestriction = ps.executeQuery();
