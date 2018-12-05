@@ -879,7 +879,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
-        //generate file DOT (graph description language)			
+        //generate file DOT (graph description language)	
+        String sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' ";
+        String sqlRestriction1 = "select distinct source,target,result from violation where result ='A' ";
+        String sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
         String path = "view/pacotes/";
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
@@ -895,16 +898,51 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 while (rs.next()) {
                     if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
                         gv.addln("\"" + rs.getString(1) + "\" [shape=box];");
+
+                        PreparedStatement ps = connection.preparesStatement(sqlRestriction);
+                        ps.setString(1, rs.getString(1));
+                        ResultSet rsRestriction = ps.executeQuery();
+                        while (rsRestriction.next()) {
+                            gv.addln("\"" + rsRestriction.getString(2) + "\"" + " [shape=box, style=filled, color=\"0.499 0.386 1.000\"];");
+                        }
+                        rsRestriction.close();
+                        ps.close();
                     }
                 }
                 PreparedStatement prepareStatementTipos = connection.preparesStatement(pacoteAccess);
                 ResultSet rsTipo = prepareStatementTipos.executeQuery();
                 while (rsTipo.next()) {
                     if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
+                        PreparedStatement ps = connection.preparesStatement(sqlRestrictionArrow);
+                        ps.setString(1, rsTipo.getString(1));
+                        ps.setString(2, rsTipo.getString(2));
+                        ResultSet rsRestriction = ps.executeQuery();
+                        while (rsRestriction.next()) {
+                            gv.addln("edge [color=black];");
+                            if (rsRestriction.getString(3).equals("D")) {
+                                gv.addln("edge [color=red];");
+                            } else {
+                                gv.addln("edge [color=black];");
+                            }
+                        }
+                        ps.close();
+                        rsRestriction.close();
                         gv.addln("\"" + rsTipo.getString(1) + "\" -> \"" + rsTipo.getString(2) + "\";");
+
                     }
                 }
 
+                PreparedStatement ps = connection.preparesStatement(sqlRestriction1);
+                //ps.setString(1, rsTipo.getString(1));
+                ResultSet rsRestriction = ps.executeQuery();
+                while (rsRestriction.next()) {
+                    //if (!gv.getDotSource().contains("\"" + rsRestriction.getString(1) + "\"" + "->" + "\"" + rsRestriction.getString(2) + "\"" + ";")) {
+                    gv.addln("edge [color=blue];");
+                    gv.addln("\"" + rsRestriction.getString(1) + "\"" + "->" + "\"" + rsRestriction.getString(2) + "\"" + ";");
+                    //}
+                }
+                rsRestriction.close();
+                ps.close();
                 gv.add(gv.end_graph());
                 //out of file .dot 
                 System.out.println("========= Start Copy ========");
@@ -937,194 +975,451 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
         //generate file DOT (graph description language) Classes			
-        String sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' ";
-        String sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
-        String path = null;
-        if (chbApiJava.isSelected()) {
-            path = "view/classGeral/";
-        } else {
-            path = "view/class/";
-        }
-        GraphViz gv = new GraphViz();
-        gv.addln(gv.start_graph());
+        String sqlRestriction
+                = "select distinct source,target,result from violation where source = ? and result ='A' ";
+        String sqlRestrictionArrow
+                = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
+        String path
+                = null;
 
-        ConexaoSQLLite connection = new ConexaoSQLLite();
-        String classes = "select distinct origem from classes";
-        String classesAccess = "";
-        if (chbApiJava.isSelected()) {
-            classesAccess = "select distinct source, target from classAccess union select distinct source, target from classDeclare";
+        if (chbApiJava
+                .isSelected()) {
+            path
+                    = "view/classGeral/";
+
         } else {
-            classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
+            path
+                    = "view/class/";
+
+        }
+        GraphViz gv
+                = new GraphViz();
+        gv
+                .addln(gv
+                        .start_graph());
+
+        ConexaoSQLLite connection
+                = new ConexaoSQLLite();
+        String classes
+                = "select distinct origem from classes";
+        String classesAccess
+                = "";
+
+        if (chbApiJava
+                .isSelected()) {
+            classesAccess
+                    = "select distinct source, target from classAccess union select distinct source, target from classDeclare";
+
+        } else {
+            classesAccess
+                    = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
+
         }
 
-        if (connection.conectar()) {
+        if (connection
+                .conectar()) {
             try {
-                Statement stmt = connection.criarStatement();
-                PreparedStatement prepareStatement = connection.preparesStatement(classes);
-                ResultSet rs = prepareStatement.executeQuery();
-                while (rs.next()) {
-                    if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
-                        gv.addln("\"" + rs.getString(1) + "\"" + " [weight=8];");
-                        PreparedStatement ps = connection.preparesStatement(sqlRestriction);
-                        ps.setString(1, rs.getString(1));
-                        ResultSet rsRestriction = ps.executeQuery();
-                        while (rsRestriction.next()) {
-                            gv.addln("\"" + rsRestriction.getString(2) + "\"" + " [weight=8, style=filled, color=\"0.499 0.386 1.000\"];");
+                Statement stmt
+                        = connection
+                                .criarStatement();
+                PreparedStatement prepareStatement
+                        = connection
+                                .preparesStatement(classes
+                                );
+                ResultSet rs
+                        = prepareStatement
+                                .executeQuery();
+
+                while (rs
+                        .next()) {
+                    if ((!rs
+                            .getString(1).equals("")) & (!rs
+                            .getString(1).isEmpty())) {
+                        gv
+                                .addln("\"" + rs
+                                        .getString(1) + "\"" + " [weight=8];");
+                        PreparedStatement ps
+                                = connection
+                                        .preparesStatement(sqlRestriction
+                                        );
+                        ps
+                                .setString(1, rs
+                                        .getString(1));
+                        ResultSet rsRestriction
+                                = ps
+                                        .executeQuery();
+
+                        while (rsRestriction
+                                .next()) {
+                            gv
+                                    .addln("\"" + rsRestriction
+                                            .getString(2) + "\"" + " [weight=8, style=filled, color=\"0.499 0.386 1.000\"];");
+
                         }
-                        rsRestriction.close();
-                        ps.close();
+                        rsRestriction
+                                .close();
+                        ps
+                                .close();
+
                     }
                 }
-                PreparedStatement prepareStatementTipos = connection.preparesStatement(classesAccess);
-                ResultSet rsTipo = prepareStatementTipos.executeQuery();
-                while (rsTipo.next()) {
-                    gv.addln("edge [color=black];");
-                    if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
-                        PreparedStatement ps = connection.preparesStatement(sqlRestrictionArrow);
-                        ps.setString(1, rsTipo.getString(1));
-                        ps.setString(2, rsTipo.getString(2));
-                        ResultSet rsRestriction = ps.executeQuery();
-                        while (rsRestriction.next()) {
-                            if (rsRestriction.getString(3).equals("D")) {
-                                gv.addln("edge [color=red];");
+                PreparedStatement prepareStatementTipos
+                        = connection
+                                .preparesStatement(classesAccess
+                                );
+                ResultSet rsTipo
+                        = prepareStatementTipos
+                                .executeQuery();
+
+                while (rsTipo
+                        .next()) {
+                    gv
+                            .addln("edge [color=black];");
+
+                    if ((!rsTipo
+                            .getString(2).isEmpty()) & (!rsTipo
+                            .getString(2).equals(""))) {
+                        PreparedStatement ps
+                                = connection
+                                        .preparesStatement(sqlRestrictionArrow
+                                        );
+                        ps
+                                .setString(1, rsTipo
+                                        .getString(1));
+                        ps
+                                .setString(2, rsTipo
+                                        .getString(2));
+                        ResultSet rsRestriction
+                                = ps
+                                        .executeQuery();
+
+                        while (rsRestriction
+                                .next()) {
+                            if (rsRestriction
+                                    .getString(3).equals("D")) {
+                                gv
+                                        .addln("edge [color=red];");
+
                             } else {
-                                gv.addln("edge [color=black];");
+                                gv
+                                        .addln("edge [color=black];");
+
                             }
                         }
-                        ps.close();
-                        rsRestriction.close();
-                        
+                        ps
+                                .close();
+                        rsRestriction
+                                .close();
+
                         //VERIFICAR 
                         //if (!gv.getDotSource().contains("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";")) {
-                        gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                        gv
+                                .addln("\"" + rsTipo
+                                        .getString(1) + "\"" + "->" + "\"" + rsTipo
+                                        .getString(2) + "\"" + ";");
                         //}
-                        ps = connection.preparesStatement(sqlRestriction);
-                        ps.setString(1, rsTipo.getString(1));
-                        rsRestriction = ps.executeQuery();
-                        while (rsRestriction.next()) {
-                            if (!gv.getDotSource().contains("\"" + rsRestriction.getString(1) + "\"" + "->" + "\"" + rsRestriction.getString(2) + "\"" + ";")) {
-                                gv.addln("edge [color=blue];");
-                                gv.addln("\"" + rsRestriction.getString(1) + "\"" + "->" + "\"" + rsRestriction.getString(2) + "\"" + ";");
+                        ps
+                                = connection
+                                        .preparesStatement(sqlRestriction
+                                        );
+                        ps
+                                .setString(1, rsTipo
+                                        .getString(1));
+                        rsRestriction
+                                = ps
+                                        .executeQuery();
+
+                        while (rsRestriction
+                                .next()) {
+                            if (!gv
+                                    .getDotSource().contains("\"" + rsRestriction
+                                            .getString(1) + "\"" + "->" + "\"" + rsRestriction
+                                            .getString(2) + "\"" + ";")) {
+                                gv
+                                        .addln("edge [color=blue];");
+                                gv
+                                        .addln("\"" + rsRestriction
+                                                .getString(1) + "\"" + "->" + "\"" + rsRestriction
+                                                .getString(2) + "\"" + ";");
+
                             }
                         }
-                        rsRestriction.close();
-                        ps.close();
+                        rsRestriction
+                                .close();
+                        ps
+                                .close();
+
                     }
                 }
 
-                gv.add(gv.end_graph());
+                gv
+                        .add(gv
+                                .end_graph());
                 //out of file .dot 
-                System.out.println("========= Start Copy ========");
-                System.out.println(gv.getDotSource());
-                System.out.println("========= End Copy ========");
-                gv.increaseDpi();
+                System.out
+                        .println("========= Start Copy ========");
+                System.out
+                        .println(gv
+                                .getDotSource());
+                System.out
+                        .println("========= End Copy ========");
+                gv
+                        .increaseDpi();
 
                 //Type file
-                File dir = new File(path);
-                dir.mkdir();
-                File out = null;
-                String type = "png";
-                if (System.getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
-                    out = new File(path + gv.getImageDpi() + "." + type);   // Linux			
+                File dir
+                        = new File(path
+                        );
+                dir
+                        .mkdir();
+                File out
+                        = null;
+                String type
+                        = "png";
+
+                if (System
+                        .getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
+                    out
+                            = new File(path
+                                    + gv
+                                            .getImageDpi() + "." + type
+                            );   // Linux			
+
                 } else {
-                    out = new File(path + gv.getImageDpi() + type);    // Windows
+                    out
+                            = new File(path
+                                    + gv
+                                            .getImageDpi() + type
+                            );    // Windows
+
                 }
 
-                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
-                ImageIcon image = new ImageIcon(path + "106.png");
-                lblImage.setIcon(image);
-                lblImage.repaint();
+                gv
+                        .writeGraphToFile(gv
+                                .getGraph(gv
+                                        .getDotSource(), type,
+                                        "dot"), out
+                        );
+                ImageIcon image
+                        = new ImageIcon(path
+                                + "106.png");
+                lblImage
+                        .setIcon(image
+                        );
+                lblImage
+                        .repaint();
+
             } catch (SQLException e) {
-                System.err.println(e.getMessage());
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                System.err
+                        .println(e
+                                .getMessage());
+                JOptionPane
+                        .showMessageDialog(null, e
+                                .getMessage());
+
             } finally {
-                connection.desconectar();
+                connection
+                        .desconectar();
+
             }
         }
     }//GEN-LAST:event_btnGerarClassActionPerformed
 
     private void btnGerarGeralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarGeralActionPerformed
         //generate file DOT (graph description language) Classes			        
-        String path = null;
-        if (chbApiJava.isSelected()) {
-            path = "view/clusterGeral/";
+        String path
+                = null;
+
+        if (chbApiJava
+                .isSelected()) {
+            path
+                    = "view/clusterGeral/";
+
         } else {
-            path = "view/cluster/";
+            path
+                    = "view/cluster/";
+
         }
 
-        int cluster = 0;
-        GraphViz gv = new GraphViz();
-        gv.addln(gv.start_graph());
+        int cluster
+                = 0;
+        GraphViz gv
+                = new GraphViz();
+        gv
+                .addln(gv
+                        .start_graph());
 
-        ConexaoSQLLite connection = new ConexaoSQLLite();
-        String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
-        String pacotes = "select distinct package from pacote";
-        String classes = "select distinct origem from classes where origem like ?";
-        String classesAccess = "";
-        if (chbApiJava.isSelected()) {
-            classesAccess = "select distinct source, target from classAccess union select distinct source, target from classDeclare";
+        ConexaoSQLLite connection
+                = new ConexaoSQLLite();
+        String pacoteAccess
+                = "select distinct pacote1,pacote2 from pacotes";
+        String pacotes
+                = "select distinct package from pacote";
+        String classes
+                = "select distinct origem from classes where origem like ?";
+        String classesAccess
+                = "";
+
+        if (chbApiJava
+                .isSelected()) {
+            classesAccess
+                    = "select distinct source, target from classAccess union select distinct source, target from classDeclare";
+
         } else {
-            classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
+            classesAccess
+                    = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
+
         }
 
-        if (connection.conectar()) {
+        if (connection
+                .conectar()) {
             try {
-                Statement stmt = connection.criarStatement();
-                PreparedStatement prepareStatement = connection.preparesStatement(pacotes);
-                ResultSet rs = prepareStatement.executeQuery();
-                while (rs.next()) {
-                    if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
-                        gv.addln("subgraph cluster_" + String.valueOf(cluster) + "{");
-                        cluster += 1;
-                        gv.addln("node [style=filled];");
-                        stmt = connection.criarStatement();
-                        prepareStatement = connection.preparesStatement(classes);
-                        prepareStatement.setString(1, rs.getString(1) + "%");
-                        ResultSet rsClass = prepareStatement.executeQuery();
-                        while (rsClass.next()) {
-                            if ((!rsClass.getString(1).equals("")) & (!rsClass.getString(1).isEmpty())) {
-                                gv.addln("\"" + rsClass.getString(1) + "\";");
+                Statement stmt
+                        = connection
+                                .criarStatement();
+                PreparedStatement prepareStatement
+                        = connection
+                                .preparesStatement(pacotes
+                                );
+                ResultSet rs
+                        = prepareStatement
+                                .executeQuery();
+
+                while (rs
+                        .next()) {
+                    if ((!rs
+                            .getString(1).equals("")) & (!rs
+                            .getString(1).isEmpty())) {
+                        gv
+                                .addln("subgraph cluster_" + String
+                                        .valueOf(cluster
+                                        ) + "{");
+                        cluster
+                                += 1;
+                        gv
+                                .addln("node [style=filled];");
+                        stmt
+                                = connection
+                                        .criarStatement();
+                        prepareStatement
+                                = connection
+                                        .preparesStatement(classes
+                                        );
+                        prepareStatement
+                                .setString(1, rs
+                                        .getString(1) + "%");
+                        ResultSet rsClass
+                                = prepareStatement
+                                        .executeQuery();
+
+                        while (rsClass
+                                .next()) {
+                            if ((!rsClass
+                                    .getString(1).equals("")) & (!rsClass
+                                    .getString(1).isEmpty())) {
+                                gv
+                                        .addln("\"" + rsClass
+                                                .getString(1) + "\";");
+
                             }
                         }
-                        gv.addln("label = \"" + rs.getString(1) + "\";");
-                        gv.addln("}");
+                        gv
+                                .addln("label = \"" + rs
+                                        .getString(1) + "\";");
+                        gv
+                                .addln("}");
+
                     }
                 }
-                PreparedStatement prepareStatementTipos = connection.preparesStatement(classesAccess);
-                ResultSet rsTipo = prepareStatementTipos.executeQuery();
-                while (rsTipo.next()) {
-                    if ((!rsTipo.getString(2).isEmpty()) & (!rsTipo.getString(2).equals(""))) {
-                        gv.addln("\"" + rsTipo.getString(1) + "\"" + "->" + "\"" + rsTipo.getString(2) + "\"" + ";");
+                PreparedStatement prepareStatementTipos
+                        = connection
+                                .preparesStatement(classesAccess
+                                );
+                ResultSet rsTipo
+                        = prepareStatementTipos
+                                .executeQuery();
+
+                while (rsTipo
+                        .next()) {
+                    if ((!rsTipo
+                            .getString(2).isEmpty()) & (!rsTipo
+                            .getString(2).equals(""))) {
+                        gv
+                                .addln("\"" + rsTipo
+                                        .getString(1) + "\"" + "->" + "\"" + rsTipo
+                                        .getString(2) + "\"" + ";");
+
                     }
                 }
                 //gv.addln("Projeto [shape=Mdiamond];");
 
-                gv.add(gv.end_graph());
+                gv
+                        .add(gv
+                                .end_graph());
                 //out of file .dot 
-                System.out.println("========= Start Copy ========");
-                System.out.println(gv.getDotSource());
-                System.out.println("========= End Copy ========");
-                gv.increaseDpi();
+                System.out
+                        .println("========= Start Copy ========");
+                System.out
+                        .println(gv
+                                .getDotSource());
+                System.out
+                        .println("========= End Copy ========");
+                gv
+                        .increaseDpi();
 
                 //Type file
-                File dir = new File(path);
-                dir.mkdir();
-                File out = null;
-                String type = "png";
-                if (System.getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
-                    out = new File(path + gv.getImageDpi() + "." + type);   // Linux			
+                File dir
+                        = new File(path
+                        );
+                dir
+                        .mkdir();
+                File out
+                        = null;
+                String type
+                        = "png";
+
+                if (System
+                        .getProperty("os.name").replaceAll("\\s", "").contains("Linux")) {
+                    out
+                            = new File(path
+                                    + gv
+                                            .getImageDpi() + "." + type
+                            );   // Linux			
+
                 } else {
-                    out = new File(path + gv.getImageDpi() + type);    // Windows
+                    out
+                            = new File(path
+                                    + gv
+                                            .getImageDpi() + type
+                            );    // Windows
+
                 }
-                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type, "dot"), out);
-                ImageIcon image = new ImageIcon(path + "106.png");
-                lblImage.setIcon(image);
-                lblImage.repaint();
+                gv
+                        .writeGraphToFile(gv
+                                .getGraph(gv
+                                        .getDotSource(), type,
+                                        "dot"), out
+                        );
+                ImageIcon image
+                        = new ImageIcon(path
+                                + "106.png");
+                lblImage
+                        .setIcon(image
+                        );
+                lblImage
+                        .repaint();
+
             } catch (SQLException e) {
-                System.err.println(e.getMessage());
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                System.err
+                        .println(e
+                                .getMessage());
+                JOptionPane
+                        .showMessageDialog(null, e
+                                .getMessage());
+
             } finally {
-                connection.desconectar();
+                connection
+                        .desconectar();
 
             }
         }
@@ -1132,49 +1427,106 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnGerarGeralActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        String SqlColunas = "select distinct origem from classes  order by origem ";
-        String SqlVerificar = "select distinct count(*) from project where origem = ? and destino = ? and tipo in ('access','declare','create') ";
-        ConexaoSQLLite connection = new ConexaoSQLLite();
-        List<String> listColuns = new ArrayList<String>();
+        String SqlColunas
+                = "select distinct origem from classes  order by origem ";
+        String SqlVerificar
+                = "select distinct count(*) from project where origem = ? and destino = ? and tipo in ('access','declare','create') ";
+        ConexaoSQLLite connection
+                = new ConexaoSQLLite();
+        List<String> listColuns
+                = new ArrayList<String>();
 
-        if (connection.conectar()) {
+        if (connection
+                .conectar()) {
             try {
-                PreparedStatement prepareStatement = null;
-                prepareStatement = connection.preparesStatement(SqlColunas);
-                ResultSet rs = prepareStatement.executeQuery();
-                DefaultTableModel tableModel = new DefaultTableModel();
-                tbleMatriz.setIntercellSpacing(new Dimension(1, 2));
-                tableModel.addColumn("");
-                while (rs.next()) {
-                    listColuns.add(rs.getString(1));
-                    tableModel.addColumn(rs.getString(1));
+                PreparedStatement prepareStatement
+                        = null;
+                prepareStatement
+                        = connection
+                                .preparesStatement(SqlColunas
+                                );
+                ResultSet rs
+                        = prepareStatement
+                                .executeQuery();
+                DefaultTableModel tableModel
+                        = new DefaultTableModel();
+                tbleMatriz
+                        .setIntercellSpacing(new Dimension(1, 2));
+                tableModel
+                        .addColumn("");
+
+                while (rs
+                        .next()) {
+                    listColuns
+                            .add(rs
+                                    .getString(1));
+                    tableModel
+                            .addColumn(rs
+                                    .getString(1));
+
                 }
-                Object[] objetos = new Object[listColuns.size() + 1];
-                rs.close();
-                rs = prepareStatement.executeQuery();
-                while (rs.next()) {
-                    objetos[0] = rs.getString(1);
-                    int col = 1;
-                    for (String s : listColuns) {
-                        PreparedStatement prepareStatementLinha = null;
-                        prepareStatementLinha = connection.preparesStatement(SqlVerificar);
-                        prepareStatementLinha.setString(1, rs.getString(1));
-                        prepareStatementLinha.setString(2, s);
-                        ResultSet rsLin = prepareStatementLinha.executeQuery();
-                        if (rsLin.getInt(1) > 0) {
+                Object[] objetos
+                        = new Object[listColuns
+                                .size() + 1];
+                rs
+                        .close();
+                rs
+                        = prepareStatement
+                                .executeQuery();
+
+                while (rs
+                        .next()) {
+                    objetos[0] = rs
+                            .getString(1);
+
+                    int col
+                            = 1;
+
+                    for (String s
+                            : listColuns) {
+                        PreparedStatement prepareStatementLinha
+                                = null;
+                        prepareStatementLinha
+                                = connection
+                                        .preparesStatement(SqlVerificar
+                                        );
+                        prepareStatementLinha
+                                .setString(1, rs
+                                        .getString(1));
+                        prepareStatementLinha
+                                .setString(2, s
+                                );
+                        ResultSet rsLin
+                                = prepareStatementLinha
+                                        .executeQuery();
+
+                        if (rsLin
+                                .getInt(1) > 0) {
                             objetos[col] = "\u25CF";
+
                         } else {
                             objetos[col] = "";
+
                         }
-                        col += 1;
+                        col
+                                += 1;
+
                     }
-                    tableModel.addRow(objetos);
+                    tableModel
+                            .addRow(objetos
+                            );
+
                 }
-                tbleMatriz.setModel(tableModel);
+                tbleMatriz
+                        .setModel(tableModel
+                        );
+
             } catch (SQLException e) {
 
             } finally {
-                connection.desconectar();
+                connection
+                        .desconectar();
+
             }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -1184,70 +1536,150 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void getClasses() {
-        modelRestriciton.clear();
-        ConexaoSQLLite connection = new ConexaoSQLLite();
-        String classes = "select distinct origem from project";
-        String tipos = "select distinct destino from project";
-        if (connection.conectar()) {
+        modelRestriciton
+                .clear();
+        ConexaoSQLLite connection
+                = new ConexaoSQLLite();
+        String classes
+                = "select distinct origem from project";
+        String tipos
+                = "select distinct destino from project";
+
+        if (connection
+                .conectar()) {
             try {
-                DefaultListModel listModel = new DefaultListModel();
-                DefaultListModel listModel2 = new DefaultListModel();
-                Statement stmt = connection.criarStatement();
-                PreparedStatement prepareStatement = connection.preparesStatement(classes);
-                ResultSet rs = prepareStatement.executeQuery();
-                while (rs.next()) {
-                    listClass.removeAll();
-                    listClass2.removeAll();
-                    listModel.addElement(rs.getString("origem"));
-                    listModel2.addElement(rs.getString("origem"));
+                DefaultListModel listModel
+                        = new DefaultListModel();
+                DefaultListModel listModel2
+                        = new DefaultListModel();
+                Statement stmt
+                        = connection
+                                .criarStatement();
+                PreparedStatement prepareStatement
+                        = connection
+                                .preparesStatement(classes
+                                );
+                ResultSet rs
+                        = prepareStatement
+                                .executeQuery();
+
+                while (rs
+                        .next()) {
+                    listClass
+                            .removeAll();
+                    listClass2
+                            .removeAll();
+                    listModel
+                            .addElement(rs
+                                    .getString("origem"));
+                    listModel2
+                            .addElement(rs
+                                    .getString("origem"));
 
                 }
-                PreparedStatement prepareStatementTipos = connection.preparesStatement(tipos);
-                ResultSet rsTipo = prepareStatementTipos.executeQuery();
-                while (rsTipo.next()) {
-                    listModel2.addElement(rsTipo.getString("destino"));
+                PreparedStatement prepareStatementTipos
+                        = connection
+                                .preparesStatement(tipos
+                                );
+                ResultSet rsTipo
+                        = prepareStatementTipos
+                                .executeQuery();
+
+                while (rsTipo
+                        .next()) {
+                    listModel2
+                            .addElement(rsTipo
+                                    .getString("destino"));
+
                 }
-                rs.close();
-                rsTipo.close();
-                listClass.setModel(listModel);
-                listClass2.setModel(listModel2);
+                rs
+                        .close();
+                rsTipo
+                        .close();
+                listClass
+                        .setModel(listModel
+                        );
+                listClass2
+                        .setModel(listModel2
+                        );
 
             } catch (SQLException e) {
-                System.err.println(e.getMessage());
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                System.err
+                        .println(e
+                                .getMessage());
+                JOptionPane
+                        .showMessageDialog(null, e
+                                .getMessage());
+
             } finally {
-                connection.desconectar();
+                connection
+                        .desconectar();
+
             }
         }
     }
 
     private void getPackage() {
-        modelRestriciton.clear();
-        ConexaoSQLLite connection = new ConexaoSQLLite();
-        String pacotes = "select distinct * from pacote";
-        if (connection.conectar()) {
+        modelRestriciton
+                .clear();
+        ConexaoSQLLite connection
+                = new ConexaoSQLLite();
+        String pacotes
+                = "select distinct * from pacote";
+
+        if (connection
+                .conectar()) {
             try {
-                DefaultListModel listModel = new DefaultListModel();
-                DefaultListModel listModel2 = new DefaultListModel();
-                Statement stmt = connection.criarStatement();
-                PreparedStatement prepareStatement = connection.preparesStatement(pacotes);
-                ResultSet rs = prepareStatement.executeQuery();
-                while (rs.next()) {
-                    listClass.removeAll();
-                    listClass2.removeAll();
-                    listModel.addElement(rs.getString(1));
-                    listModel2.addElement(rs.getString(1));
+                DefaultListModel listModel
+                        = new DefaultListModel();
+                DefaultListModel listModel2
+                        = new DefaultListModel();
+                Statement stmt
+                        = connection
+                                .criarStatement();
+                PreparedStatement prepareStatement
+                        = connection
+                                .preparesStatement(pacotes
+                                );
+                ResultSet rs
+                        = prepareStatement
+                                .executeQuery();
+
+                while (rs
+                        .next()) {
+                    listClass
+                            .removeAll();
+                    listClass2
+                            .removeAll();
+                    listModel
+                            .addElement(rs
+                                    .getString(1));
+                    listModel2
+                            .addElement(rs
+                                    .getString(1));
 
                 }
-                rs.close();
-                listClass.setModel(listModel);
-                listClass2.setModel(listModel2);
+                rs
+                        .close();
+                listClass
+                        .setModel(listModel
+                        );
+                listClass2
+                        .setModel(listModel2
+                        );
 
             } catch (SQLException e) {
-                System.err.println(e.getMessage());
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                System.err
+                        .println(e
+                                .getMessage());
+                JOptionPane
+                        .showMessageDialog(null, e
+                                .getMessage());
+
             } finally {
-                connection.desconectar();
+                connection
+                        .desconectar();
+
             }
         }
     }
