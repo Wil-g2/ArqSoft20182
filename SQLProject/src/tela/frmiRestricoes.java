@@ -63,6 +63,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         jFileChooser1 = new javax.swing.JFileChooser();
         btnGroup = new javax.swing.ButtonGroup();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtPath = new javax.swing.JTextField();
@@ -90,6 +91,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
         jButton11 = new javax.swing.JButton();
+        rbClasses = new javax.swing.JRadioButton();
+        rbPacotes = new javax.swing.JRadioButton();
         jPanel4 = new javax.swing.JPanel();
         jButton10 = new javax.swing.JButton();
         btnGerarClass = new javax.swing.JButton();
@@ -258,6 +261,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         });
 
+        buttonGroup1.add(rbClasses);
+        rbClasses.setSelected(true);
+        rbClasses.setText("Classes");
+
+        buttonGroup1.add(rbPacotes);
+        rbPacotes.setText("Pacotes");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -265,13 +275,17 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(419, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(80, 80, 80))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(150, 150, 150)
                         .addComponent(jButton11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rbClasses)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbPacotes)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 295, Short.MAX_VALUE)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton5)
@@ -320,7 +334,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jButton8))
-                            .addComponent(jButton11))
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton11)
+                                .addComponent(rbClasses)
+                                .addComponent(rbPacotes)))
                         .addGap(15, 15, 15)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -790,6 +807,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         String extend = "select count(*) as count from project where tipo = \"extend\" and origem = ? and destino = ? ";
         String declare = "select count(*) as count from project where tipo = \"declare\" and origem = ? and destino = ? ";
         String implement = "select count(*) as count from project where tipo = \"implement\" and origem = ? and destino = ? ";
+        String pacotes = "select count(*) as count from pacotes where pacote1 = ? and pacote2 = ?";
 
         if (connection.conectar()) {
             try {
@@ -800,15 +818,21 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
                 String[] parameters = null;
                 for (int i = 0; i < model.getSize(); i++) {
-                    if (model.getElementAt(i).contains("Can Access") || model.getElementAt(i).contains("Required Access") || model.getElementAt(i).contains("Denied Access")) {
-                        prepareStatement = connection.preparesStatement(canAccess);
-                    } else if (model.getElementAt(i).contains("Can Implement") || model.getElementAt(i).contains("Required Implement") || model.getElementAt(i).contains("Denied Implement")) {
-                        prepareStatement = connection.preparesStatement(implement);
-                    } else if (model.getElementAt(i).contains("Can Declare") || model.getElementAt(i).contains("Required Declare") || model.getElementAt(i).contains("Denied Declare")) {
-                        prepareStatement = connection.preparesStatement(declare);
-                    } else if (model.getElementAt(i).contains("Can Extend") || model.getElementAt(i).contains("Required Extend") || model.getElementAt(i).contains("Denied Extend")) {
-                        prepareStatement = connection.preparesStatement(implement);
-                    }
+                    if (rbClasses.isSelected()) {
+                        if (model.getElementAt(i).contains("Can Access") || model.getElementAt(i).contains("Required Access") || model.getElementAt(i).contains("Denied Access")) {
+                            prepareStatement = connection.preparesStatement(canAccess);
+                        } else if (model.getElementAt(i).contains("Can Implement") || model.getElementAt(i).contains("Required Implement") || model.getElementAt(i).contains("Denied Implement")) {
+                            prepareStatement = connection.preparesStatement(implement);
+                        } else if (model.getElementAt(i).contains("Can Declare") || model.getElementAt(i).contains("Required Declare") || model.getElementAt(i).contains("Denied Declare")) {
+                            prepareStatement = connection.preparesStatement(declare);
+                        } else if (model.getElementAt(i).contains("Can Extend") || model.getElementAt(i).contains("Required Extend") || model.getElementAt(i).contains("Denied Extend")) {
+                            prepareStatement = connection.preparesStatement(implement);
+                        }
+                    }else{
+                        if (model.getElementAt(i).contains("Can Access") || model.getElementAt(i).contains("Required Access") || model.getElementAt(i).contains("Denied Access")) {
+                            prepareStatement = connection.preparesStatement(pacotes);
+                        }
+                    } 
                     String parameter2 = "";
                     parameters = model.getElementAt(i).split("-");
                     prepareStatement.setString(1, parameters[0].trim());
@@ -1231,6 +1255,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGerarGeral;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton btnValidar;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox chbApiJava;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
@@ -1261,6 +1286,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JList<String> listClass;
     private javax.swing.JList<String> listClass2;
     private javax.swing.JList<String> listRestriction;
+    private javax.swing.JRadioButton rbClasses;
+    private javax.swing.JRadioButton rbPacotes;
     private javax.swing.JRadioButton rgDenied;
     private javax.swing.JRadioButton rgRequired;
     private javax.swing.JTable tbleMatriz;
