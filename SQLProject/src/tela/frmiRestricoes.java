@@ -913,6 +913,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
         //generate file DOT (graph description language) Classes			
+        String sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' ";
+        String sqlRestrictionArrow = "select source,target,result from violation where source = ? and and target = ?  result in ('A','D') ";
         String path = null;
         if (chbApiJava.isSelected()) {
             path = "view/classGeral/";
@@ -939,6 +941,14 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 while (rs.next()) {
                     if ((!rs.getString(1).equals("")) & (!rs.getString(1).isEmpty())) {
                         gv.addln("\"" + rs.getString(1) + "\"" + " [weight=8];");
+                        PreparedStatement ps = connection.preparesStatement(sqlRestriction);
+                        ps.setString(1,rs.getString(1));
+                        ResultSet rsRestriction = ps.executeQuery();
+                        while(rsRestriction.next()){
+                            gv.addln("\"" + rsRestriction.getString(2) + "\"" + " [weight=8, style=filled, color=\"0.499 0.386 1.000\"];");
+                        }
+                        rsRestriction.close();
+                        ps.close();
                     }
                 }
                 PreparedStatement prepareStatementTipos = connection.preparesStatement(classesAccess);
