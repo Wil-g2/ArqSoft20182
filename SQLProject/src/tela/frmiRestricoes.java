@@ -95,6 +95,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         btnGerarGeral = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         lblImage = new javax.swing.JLabel();
+        chbApiJava = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tbleMatriz = new javax.swing.JTable();
@@ -374,6 +375,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         lblImage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jScrollPane5.setViewportView(lblImage);
 
+        chbApiJava.setText("API Java");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -384,7 +387,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addComponent(btnGerarClass)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGerarGeral)
-                .addContainerGap(760, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chbApiJava)
+                .addContainerGap(672, Short.MAX_VALUE))
             .addComponent(jScrollPane5)
         );
         jPanel4Layout.setVerticalGroup(
@@ -393,7 +398,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton10)
                     .addComponent(btnGerarClass)
-                    .addComponent(btnGerarGeral))
+                    .addComponent(btnGerarGeral)
+                    .addComponent(chbApiJava))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
         );
@@ -731,7 +737,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         String classe2 = "";//listClass2.getSelectedValue();
         for (String s : listClass2.getSelectedValuesList()) {
             classe2 += s + ",";
-        }       
+        }
         if (rgRequired.isSelected()) {
             modelRestriciton.addElement(classe1 + "- Required Declare -" + classe2);
         } else if (rgDenied.isSelected()) {
@@ -915,7 +921,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String classes = "select distinct origem from classes";
-        String classesAccess = "select distinct source, target from classAccess";
+        String classesAccess = "";
+        if (chbApiJava.isSelected()) {
+            classesAccess = "select distinct source, target from classAccess";
+        } else {
+            classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
+        }
+
         if (connection.conectar()) {
             try {
                 Statement stmt = connection.criarStatement();
@@ -959,7 +971,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, e.getMessage());
-            } finally {
+            } finally {                
                 connection.desconectar();
             }
         }
@@ -976,8 +988,13 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         String pacoteAccess = "select distinct pacote1,pacote2 from pacotes";
         String pacotes = "select distinct package from pacote";
         String classes = "select distinct origem from classes where origem like ?";
-        //String classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
-        String classesAccess = "select distinct source, target from classAccess";
+        String classesAccess = "";
+        if (chbApiJava.isSelected()) {
+            classesAccess = "select distinct source, target from classAccess";
+        } else {
+            classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
+        }
+
         if (connection.conectar()) {
             try {
                 Statement stmt = connection.criarStatement();
@@ -1163,6 +1180,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGerarGeral;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton btnValidar;
+    private javax.swing.JCheckBox chbApiJava;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
