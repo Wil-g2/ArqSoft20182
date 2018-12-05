@@ -29,6 +29,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.ListModel;
@@ -261,72 +262,77 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(177, 177, 177)
-                .addComponent(jButton11)
-                .addContainerGap(689, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(419, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(80, 80, 80))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(150, 150, 150)
+                        .addComponent(jButton11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton8))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(5, 5, 5)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addGap(14, 14, 14)
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(btnAccess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(rgRequired)
-                                                    .addComponent(rgDenied))
-                                                .addGap(0, 0, Short.MAX_VALUE))))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jButton2)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jButton5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton8)))))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(btnValidar)
-                            .addGap(788, 788, 788)))
-                    .addGap(6, 6, 6)))
+                            .addGap(794, 794, 794))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                                    .addGap(18, 18, 18)
+                                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(rgRequired)
+                                                        .addComponent(rgDenied)))
+                                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                                    .addGap(14, 14, 14)
+                                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                                                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(btnAccess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                        .addComponent(jButton2))
+                                    .addGap(27, 662, Short.MAX_VALUE)))
+                            .addGap(6, 6, 6)))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton11)
-                .addContainerGap(463, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jButton8))
+                            .addComponent(jButton11))
+                        .addGap(15, 15, 15)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(168, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton8)))
+                    .addComponent(jButton2)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGap(29, 29, 29)
                             .addComponent(btnAccess)
@@ -343,7 +349,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     .addGap(18, 18, 18)
                     .addComponent(btnValidar)
                     .addGap(4, 4, 4)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -389,7 +395,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addComponent(btnGerarGeral)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(chbApiJava)
-                .addContainerGap(672, Short.MAX_VALUE))
+                .addContainerGap(733, Short.MAX_VALUE))
             .addComponent(jScrollPane5)
         );
         jPanel4Layout.setVerticalGroup(
@@ -421,8 +427,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             }
         ));
         tbleMatriz.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tbleMatriz.setFocusable(false);
         tbleMatriz.setGridColor(new java.awt.Color(51, 51, 51));
-        tbleMatriz.setShowGrid(true);
+        tbleMatriz.setOpaque(false);
         jScrollPane6.setViewportView(tbleMatriz);
 
         jButton3.setText("Gerar");
@@ -438,7 +445,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 982, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1043, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
@@ -638,7 +645,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     Logger.getLogger(frmiRestricoes.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                GetClass();
+                getClasses();
                 JOptionPane.showMessageDialog(this, "Projeto carregado com sucesso!");
                 connection.desconectar();
             }
@@ -803,6 +810,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void btnValidarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidarActionPerformed
+        List<String> violation = new ArrayList<String>();
         txtResult.setText("");
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String canAccess = "select count(*) as count from project where(tipo = \"access\" or tipo = \"declare\") and origem = ? and destino in(?)";
@@ -829,21 +837,27 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                     parameters = model.getElementAt(i).split("-");
                     prepareStatement.setString(1, parameters[0].trim());
                     for (String tmp : parameters[2].split(",")) {
-                        parameter2 += "\"" + tmp + "\",";
-                    }
-                    parameter2 += parameter2.substring(0, parameter2.length() - 1);
-                    prepareStatement.setString(2, parameter2);
-                    ResultSet rs = prepareStatement.executeQuery();
-                    if (rs.getInt(1) > 0) {
-                        if (model.getElementAt(i).contains("Denied")) { //Se for Deined e encotrar ocorrência
-                            txtResult.append("(DIVERGÊNCIA) - " + model.getElementAt(i) + "\n");
-                        }
-                    } else {
-                        if (model.getElementAt(i).contains("Required")) { //Se for Required e não encotrar ocorrência
-                            txtResult.append("(AUSÊNCIA) - " + model.getElementAt(i) + "\n");
+                        prepareStatement.setString(2, tmp);
+                        ResultSet rs = prepareStatement.executeQuery();
+                        if (rs.getInt(1) > 0) {
+                            if (model.getElementAt(i).contains("Denied")) { //Se for Deined e encotrar ocorrência
+                                violation.add("(DIVERGÊNCIA) - " + parameters[0].trim() + " " + parameters[1].trim() + " " + tmp + "\n");
+                            }
+                        } else {
+                            if (model.getElementAt(i).contains("Required")) { //Se for Required e não encotrar ocorrência
+                                violation.add("(AUSÊNCIA) - " + parameters[0].trim() + " " + parameters[1].trim() + " " + tmp + "\n");
+                            }
                         }
                     }
                 }
+                if (violation.isEmpty() | violation.size() <= 0) {
+                    txtResult.append("Validação não teve nenhuma violação!");
+                } else {
+                    for (String s : violation) {
+                        txtResult.append(s);
+                    }
+                }
+
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -915,7 +929,12 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
         //generate file DOT (graph description language) Classes			
-        String path = "view/class/";
+        String path = null;
+        if (chbApiJava.isSelected()) {
+            path = "view/classGeral/";
+        } else {
+            path = "view/class/";
+        }
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
 
@@ -923,7 +942,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         String classes = "select distinct origem from classes";
         String classesAccess = "";
         if (chbApiJava.isSelected()) {
-            classesAccess = "select distinct source, target from classAccess";
+            classesAccess = "select distinct source, target from classAccess union select distinct source, target from classDeclare";
         } else {
             classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
         }
@@ -971,15 +990,21 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, e.getMessage());
-            } finally {                
+            } finally {
                 connection.desconectar();
             }
         }
     }//GEN-LAST:event_btnGerarClassActionPerformed
 
     private void btnGerarGeralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarGeralActionPerformed
-        //generate file DOT (graph description language) Classes			
-        String path = "view/cluster/";
+        //generate file DOT (graph description language) Classes			        
+        String path = null;
+        if (chbApiJava.isSelected()) {
+            path = "view/clusterGeral/";
+        } else {
+            path = "view/cluster/";
+        }
+
         int cluster = 0;
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
@@ -990,7 +1015,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         String classes = "select distinct origem from classes where origem like ?";
         String classesAccess = "";
         if (chbApiJava.isSelected()) {
-            classesAccess = "select distinct source, target from classAccess";
+            classesAccess = "select distinct source, target from classAccess union select distinct source, target from classDeclare";
         } else {
             classesAccess = "select distinct source, target from classAccess where target in (select classes.origem from classes)";
         }
@@ -1108,10 +1133,10 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        GetPackage();
+        getPackage();
     }//GEN-LAST:event_jButton11ActionPerformed
 
-    private void GetClass() {
+    private void getClasses() {
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String classes = "select distinct origem from project";
         String tipos = "select distinct destino from project";
@@ -1146,7 +1171,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }
 
-    private void GetPackage() {
+    private void getPackage() {
         ConexaoSQLLite connection = new ConexaoSQLLite();
         String pacotes = "select distinct * from pacote";
         if (connection.conectar()) {
