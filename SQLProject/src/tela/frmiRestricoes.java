@@ -90,7 +90,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         btnValidar = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtResult = new javax.swing.JTextArea();
-        jButton11 = new javax.swing.JButton();
         rbClasses = new javax.swing.JRadioButton();
         rbPacotes = new javax.swing.JRadioButton();
         jPanel4 = new javax.swing.JPanel();
@@ -165,7 +164,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(listClass);
 
-        jButton2.setText("Carregar Classes");
+        jButton2.setText("Carregar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -254,13 +253,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         txtResult.setRows(5);
         jScrollPane4.setViewportView(txtResult);
 
-        jButton11.setText("Carregar Pacotes");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
         buttonGroup1.add(rbClasses);
         rbClasses.setSelected(true);
         rbClasses.setText("Classes");
@@ -275,17 +267,15 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(462, Short.MAX_VALUE)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(80, 80, 80))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(150, 150, 150)
-                        .addComponent(jButton11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(118, 118, 118)
                         .addComponent(rbClasses)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rbPacotes)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 295, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton5)
@@ -331,17 +321,16 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButton8))
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton11)
-                                .addComponent(rbClasses)
-                                .addComponent(rbPacotes)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(rbClasses)
+                                    .addComponent(rbPacotes))
+                                .addComponent(jButton5))
+                            .addComponent(jButton8))
                         .addGap(15, 15, 15)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addContainerGap(170, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addContainerGap()
@@ -479,7 +468,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 .addContainerGap(56, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Matriz Esparsa", jPanel5);
+        jTabbedPane1.addTab("DSM", jPanel5);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -599,7 +588,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                                 prepareStatement.execute();
                             }
                         }
-
+                        prepareStatement.close();
                         arq.close();
                     } catch (IOException e) {
                         System.err.printf("Erro na abertura do arquivo: %s.\n",
@@ -652,6 +641,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                             }
 
                         }
+                        rsQuery.close();
                         try {
                             prepareStatement.setString(1, s.trim());
                             prepareStatement.setString(2, "");
@@ -660,6 +650,8 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
                         }
                     }
+                    prepareStatement.close();
+                    rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(frmiRestricoes.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -673,7 +665,11 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        getClasses();
+        if (rbClasses.isSelected()) {
+            getClasses();
+        } else {
+            getPackage();
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAccessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccessActionPerformed
@@ -815,6 +811,7 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                 PreparedStatement prepareStatement = null;
                 prepareStatement = connection.preparesStatement(delViolantion);
                 prepareStatement.execute();
+                prepareStatement.close();
 
                 String[] parameters = null;
                 for (int i = 0; i < model.getSize(); i++) {
@@ -855,7 +852,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
                                 violation.add("(AUSÊNCIA) - " + parameters[0].trim() + " " + parameters[1].trim() + " " + tmp + "\n");
                             }
                         }
+                        rs.close();
                         prepareStatementInsert.execute();
+                        prepareStatementInsert.close();
                     }
                 }
                 if (violation.isEmpty() | violation.size() <= 0) {
@@ -880,9 +879,9 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
         //generate file DOT (graph description language)	
-        String sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' ";
-        String sqlRestriction1 = "select distinct source,target,result from violation where result ='A' ";
-        String sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
+        String sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' and source in (select package from pacote)";
+        String sqlRestriction1 = "select distinct source,target,result from violation where result ='A'and source in (select package from pacote) ";
+        String sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') and source in (select package from pacote)";
         String path = "view/pacotes/";
         GraphViz gv = new GraphViz();
         gv.addln(gv.start_graph());
@@ -975,22 +974,17 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
 
     private void btnGerarClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarClassActionPerformed
         //generate file DOT (graph description language) Classes			
-        String sqlRestriction
-                = "select distinct source,target,result from violation where source = ? and result ='A' ";
-        String sqlRestrictionArrow
-                = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
-        String path
-                = null;
-
-        if (chbApiJava
-                .isSelected()) {
-            path
-                    = "view/classGeral/";
-
+        String sqlRestriction = null;
+        String sqlRestrictionArrow = null;
+        String path = null;
+        if (chbApiJava.isSelected()) {
+            sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' ";
+            sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') ";
+            path = "view/classGeral/";
         } else {
-            path
-                    = "view/class/";
-
+            sqlRestriction = "select distinct source,target,result from violation where source = ? and result ='A' and target in (select origem from classes)";
+            sqlRestrictionArrow = "select distinct source,target,result from violation where source = ? and target = ?  and result in ('D') and target in (select origem from classes)";
+            path = "view/class/";
         }
         GraphViz gv
                 = new GraphViz();
@@ -1531,10 +1525,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        getPackage();
-    }//GEN-LAST:event_jButton11ActionPerformed
-
     private void getClasses() {
         modelRestriciton
                 .clear();
@@ -1693,7 +1683,6 @@ public class frmiRestricoes extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox chbApiJava;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
